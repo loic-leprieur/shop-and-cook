@@ -34,7 +34,6 @@ public class MainActivity extends AppCompatActivity {
             R.drawable.image5,
             R.drawable.image6,
             R.drawable.image7
-
     };
 
     /**
