@@ -1,5 +1,8 @@
 package be.vives.loic.shopandcook.repository;
 
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
+
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -19,20 +22,24 @@ public class RecipeRepository {
         this.recipes = recipes;
     }
 
-    // GET
+    // FIND
     // ALL
-
     public List findAll(){
         return (List) new ArrayList(recipes.values());
     }
 
+    // BY ID
     public Recipe findById(int id){
         return (Recipe) recipes.get(id);
     }
 
+    // BY TITLE
     public Recipe findRecipeByTitle(String recipeTitle){
         return  (Recipe) recipes.get(recipeTitle);
     }
 
-    // POST
+    // update the value of the map
+    public void save(){
+        // To string the value of the map
+    }
 }
