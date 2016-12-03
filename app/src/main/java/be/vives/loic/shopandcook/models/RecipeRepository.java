@@ -19,6 +19,24 @@ public class RecipeRepository {
         this.recipes = recipes;
     }
 
+    public RecipeRepository() {
+        List ingredients = new ArrayList();
+        ingredients.add(new Ingredient(CategoryIngredient.Cheese, "Emmental"));
+
+        List steps = new ArrayList();
+        steps.add("Etape 1 : Lorem ipsum");
+        steps.add("Etape 2 : dolor sit");
+        steps.add("Etape 3 : amet.");
+
+        recipes.put(1, new Recipe(1, "Fondants au chocolat", ingredients, steps));
+        recipes.put(2, new Recipe(2, "Tarte au citron meringuée", ingredients, steps));
+        recipes.put(3, new Recipe(3, "Filet mignon en croûte", ingredients, steps));
+        recipes.put(4, new Recipe(4, "Original American Cookies", ingredients, steps));
+        recipes.put(5, new Recipe(5, "Cheese cake", ingredients, steps));
+        recipes.put(6, new Recipe(6, "Lasagnes à la bolognaise", ingredients, steps));
+        recipes.put(7, new Recipe(7, "Boeuf Bourguignon", ingredients, steps));
+    }
+
     // FIND
     // ALL
     public List findAll(){
@@ -27,7 +45,16 @@ public class RecipeRepository {
 
     // BY ID
     public Recipe findById(int id){
-        return (Recipe) recipes.get(id);
+        Recipe r = (Recipe) recipes.get(id);
+
+        if(r == null){
+            r = new Recipe(0, "NOT FOUND", null, null);
+
+        }
+
+        System.err.println(r.getTitle());
+
+        return r;
     }
 
     // BY TITLE
