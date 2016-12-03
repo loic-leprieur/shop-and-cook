@@ -1,3 +1,15 @@
 <resources>
     <string name="app_name">Shop and Cook</string>
+
+    <string-array name="Ingredients">
+        <item>Huile</item>
+        <item>Tomate</item>
+        <item>Pomme de terre</item>
+        <item>Citron</item>
+        <item>Boeuf</item>
+        <item>Carottes</item>
+        <item>Poivron</item>
+        <item>Persil</item>
+        <item>Chocolat</item>
+    </string-array>
 </resources>
