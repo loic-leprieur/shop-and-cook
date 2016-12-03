@@ -20,7 +20,7 @@ public class Recipe {
     private String title;
 
     // Required ingredients by Key = ingredient's name
-    private Map ingredients = new HashMap();
+    private List ingredients = new ArrayList();
 
     // All steps to perform the recipe
     private List steps = new ArrayList();
@@ -31,7 +31,7 @@ public class Recipe {
      * @param ingredients : list of required ingredients
      * @param steps : how to perform the recipe by steps
      */
-    public Recipe(int id, String title, Map ingredients, List steps) {
+    public Recipe(int id, String title, List ingredients, List steps) {
         this.id = id;
         this.title = title;
         this.ingredients = ingredients;
@@ -58,11 +58,11 @@ public class Recipe {
         this.title = title;
     }
 
-    public Map getIngredients() {
+    public List getIngredients() {
         return ingredients;
     }
 
-    public void setIngredients(Map ingredients) {
+    public void setIngredients(List ingredients) {
         this.ingredients = ingredients;
     }
 
