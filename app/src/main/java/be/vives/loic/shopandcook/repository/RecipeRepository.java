@@ -25,7 +25,7 @@ public class RecipeRepository {
     // FIND
     // ALL
     public List findAll(){
-        return (List) new ArrayList(recipes.values());
+        return new ArrayList(recipes.values());
     }
 
     // BY ID
