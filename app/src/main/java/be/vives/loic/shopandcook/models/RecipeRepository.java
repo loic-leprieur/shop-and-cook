@@ -1,14 +1,11 @@
-package be.vives.loic.shopandcook.repository;
-
-import com.google.firebase.database.DatabaseReference;
-import com.google.firebase.database.FirebaseDatabase;
+package be.vives.loic.shopandcook.models;
 
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import be.vives.loic.shopandcook.model.Recipe;
+import be.vives.loic.shopandcook.models.Recipe;
 
 /**
  * Gather local recipes in a memory-database

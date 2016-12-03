@@ -1,4 +1,4 @@
-package be.vives.loic.shopandcook.repository;
+package be.vives.loic.shopandcook.activities;
 
 import android.content.Intent;
 import android.os.Bundle;
@@ -22,7 +22,6 @@ import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.GoogleAuthProvider;
 
-import be.vives.loic.shopandcook.MainActivity;
 import be.vives.loic.shopandcook.R;
 
 public class SignInActivity extends AppCompatActivity implements

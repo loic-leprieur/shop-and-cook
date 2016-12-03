@@ -1,4 +1,4 @@
-package be.vives.loic.shopandcook.model;
+package be.vives.loic.shopandcook.models;
 
 /**
  * all kind of categories

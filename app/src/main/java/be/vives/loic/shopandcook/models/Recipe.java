@@ -1,4 +1,4 @@
-package be.vives.loic.shopandcook.model;
+package be.vives.loic.shopandcook.models;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -14,7 +14,7 @@ public class Recipe {
     // unique identifier
     private int id;
 
-    private static int lastId = 0;
+    private String image;
 
     // describe the recipe
     private String title;
@@ -31,26 +31,23 @@ public class Recipe {
      * @param ingredients : list of required ingredients
      * @param steps : how to perform the recipe by steps
      */
-    public Recipe(String title, Map ingredients, List steps) {
+    public Recipe(int id, String title, Map ingredients, List steps) {
+        this.id = id;
         this.title = title;
         this.ingredients = ingredients;
         this.steps = steps;
     }
 
     public int getId() {
-        return id;
+        return this.id;
+    }
+
+    public String getIdStr() {
+        return Integer.toString(id);
     }
 
     public void setId(int id) {
         this.id = id;
-    }
-
-    public static int getLastId() {
-        return lastId;
-    }
-
-    public static void setLastId(int lastId) {
-        Recipe.lastId = lastId;
     }
 
     public String getTitle() {

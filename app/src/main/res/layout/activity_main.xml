@@ -8,53 +8,12 @@
     android:paddingLeft="@dimen/activity_horizontal_margin"
     android:paddingRight="@dimen/activity_horizontal_margin"
     android:paddingTop="@dimen/activity_vertical_margin"
-    tools:context="be.vives.loic.shopandcook.MainActivity">
-    <RelativeLayout
+    tools:context="be.vives.loic.shopandcook.activities.MainActivity">
+
+    <fragment
+        android:id="@+id/list"
+        android:name="be.vives.loic.shopandcook.fragments.ListFragment"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:paddingBottom="60dp">
-
-        <TextView
-            android:id="@+id/txt_from_db"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:text=""/>
-
-        <ListView
-            android:id="@+id/list"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:alwaysDrawnWithCache="false">
-        </ListView>
-
-    </RelativeLayout>
-
-
-    <LinearLayout
-        android:orientation="horizontal"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_alignParentBottom="true"
-        tools:paddingTop="40dp">
-
-
-        <EditText
-            android:layout_width="200dp"
-            android:layout_height="wrap_content"
-            android:inputType="textPersonName"
-            android:ems="10"
-            android:id="@+id/textSearch"
-            android:layout_weight="1"
-            android:cursorVisible="true"
-            android:hint="Enter a recipe" />
-
-        <Button
-            android:text="Search"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:id="@+id/buttonSearch"
-            android:layout_weight="1" />
-
-    </LinearLayout>
+        android:layout_height="match_parent"/>
 
 </RelativeLayout>

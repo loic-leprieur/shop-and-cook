@@ -1,4 +1,4 @@
-package be.vives.loic.shopandcook;
+package be.vives.loic.shopandcook.models;
 
 import android.app.Activity;
 import android.view.LayoutInflater;
@@ -7,6 +7,8 @@ import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
 import android.widget.ImageView;
 import android.widget.TextView;
+
+import be.vives.loic.shopandcook.R;
 
 public class RecipeArrayAdapter extends ArrayAdapter<String>{
 
