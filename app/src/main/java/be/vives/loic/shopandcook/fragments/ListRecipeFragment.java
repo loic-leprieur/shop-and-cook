@@ -3,6 +3,7 @@ package be.vives.loic.shopandcook.fragments;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
+import android.support.v4.app.ListFragment;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -10,13 +11,15 @@ import android.widget.AdapterView;
 
 import be.vives.loic.shopandcook.R;
 import be.vives.loic.shopandcook.activities.RecipeDetailActivity;
+import be.vives.loic.shopandcook.models.Recipe;
 import be.vives.loic.shopandcook.models.RecipeArrayAdapter;
+import be.vives.loic.shopandcook.models.RecipeRepository;
 
 /**
  * Created by LOIC on 03/12/2016.
  */
 
-public class ListFragment extends android.app.ListFragment implements AdapterView.OnItemClickListener {
+public class ListRecipeFragment extends ListFragment implements AdapterView.OnItemClickListener {
 
     // temporary list, will be replaced by a DB of 10 recipe
     // those 10 recipes will be randomly choose and
@@ -43,6 +46,11 @@ public class ListFragment extends android.app.ListFragment implements AdapterVie
             R.drawable.image7
     };
 
+    // all local recipes
+    public RecipeRepository repo = new RecipeRepository();
+
+    public Recipe selectedRecipe;
+
     @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
@@ -67,7 +75,7 @@ public class ListFragment extends android.app.ListFragment implements AdapterVie
     public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
         Intent detailIntent = new Intent(getContext(), RecipeDetailActivity.class);
 
-        detailIntent.putExtra(DetailsFragment.ARG_ITEM_ID, id);
+        detailIntent.putExtra("selectedRecipe", repo.findById(position+1).getTitle());
 
         startActivity(detailIntent);
     }
