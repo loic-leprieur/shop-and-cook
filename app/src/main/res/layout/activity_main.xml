@@ -12,7 +12,7 @@
 
     <fragment
         android:id="@+id/list"
-        android:name="be.vives.loic.shopandcook.fragments.ListFragment"
+        android:name="be.vives.loic.shopandcook.fragments.ListRecipeFragment"
         android:layout_width="match_parent"
         android:layout_height="match_parent"/>
 

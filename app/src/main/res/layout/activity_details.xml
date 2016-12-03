@@ -9,7 +9,7 @@
 
     <fragment
         android:id="@+id/details"
-        android:name="be.vives.loic.shopandcook.fragments.DetailsFragment"
+        android:name="be.vives.loic.shopandcook.fragments.DetailsRecipeFragment"
         android:layout_width="match_parent"
         android:layout_height="match_parent"/>
 
