@@ -57,31 +57,11 @@ public class MainActivity extends AppCompatActivity {
         setContentView(R.layout.activity_main);
 
         // Instance of a connection to Firebase
+        /*
         mFirebaseDB = FirebaseDatabase.getInstance();
         DatabaseReference mDatabase = FirebaseDatabase.getInstance().getReference();
+        */
 
-        // set up the ListView
-        list = (ListView) findViewById(R.id.list);
-        final RecipeArrayAdapter adapter = new RecipeArrayAdapter(MainActivity.this, recipes_title, imageId);
-        list.setAdapter(adapter);
 
-        // on click event handler : change to a new fragment details here
-        list.setOnItemClickListener(new AdapterView.OnItemClickListener() {
-
-            /**
-             * Click on item handler,
-             * will be replaced by an inflated list on trigger.
-             * @param parent
-             * @param view
-             * @param position
-             * @param id
-             */
-            @Override
-            public void onItemClick(AdapterView<?> parent, View view,
-                                    int position, long id) {
-                // Show the position and text from an item clicked
-                Toast.makeText(MainActivity.this, recipes_title[+position], Toast.LENGTH_SHORT).show();
-            }
-        });
     }
 }
