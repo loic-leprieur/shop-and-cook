@@ -18,13 +18,12 @@ enum CategoryIngredient{
  */
 public class Ingredient {
     private int id;
-    private static int lastId = 0;
 
     // describe the ingredient
     private String name;
 
     // from ENUM : Meat, Cheese, Vegetable, Fruit, Seasoning...
-    private String category;
+    private CategoryIngredient category;
 
     /**
      * default constructor
@@ -32,9 +31,7 @@ public class Ingredient {
      * @param category
      * @param name
      */
-    public Ingredient(String category, String name) {
-        this.id = lastId++;
-        lastId = this.id;
+    public Ingredient(CategoryIngredient category, String name) {
         this.category = category;
         this.name = name;
     }
@@ -55,11 +52,11 @@ public class Ingredient {
         this.name = name;
     }
 
-    public String getCategory() {
+    public CategoryIngredient getCategory() {
         return category;
     }
 
-    public void setCategory(String category) {
+    public void setCategory(CategoryIngredient category) {
         this.category = category;
     }
 }
