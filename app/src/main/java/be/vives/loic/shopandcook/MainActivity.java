@@ -31,8 +31,6 @@ import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 
-import java.util.List;
-
 // TODO : Switch to a Fragment layout design
 // TODO : From in-memory database to Firebase DB
 public class MainActivity extends AppCompatActivity {
@@ -166,7 +164,7 @@ public class MainActivity extends AppCompatActivity {
 
         // set up the ListView
         list = (ListView) findViewById(R.id.list);
-        final WebArrayAdapter adapter = new WebArrayAdapter(MainActivity.this, web, imageId);
+        final RecipeArrayAdapter adapter = new RecipeArrayAdapter(MainActivity.this, web, imageId);
         list.setAdapter(adapter);
 
         // Show the position and text from an item clicked

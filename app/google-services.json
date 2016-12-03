@@ -1,0 +1,99 @@
+{
+  "project_info": {
+    "project_number": "915692136402",
+    "firebase_url": "https://shopandcook-2413f.firebaseio.com",
+    "project_id": "shopandcook-2413f",
+    "storage_bucket": "shopandcook-2413f.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:915692136402:android:bc45c42dc264b06f",
+        "android_client_info": {
+          "package_name": "be.vives.loic.shopandcook"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "915692136402-co1apbu8j20shg0onuseinkstj4095ej.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "be.vives.loic.shopandcook",
+            "certificate_hash": "C423CF4191ABBECBD4E2DA1E0917EA612948E93F"
+          }
+        },
+        {
+          "client_id": "915692136402-65tlsqp1tn13s3ihjpat5ici308si7t3.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyDJHbIVX9Lk8yfFEi9U8I6zvKGaZhD3AQg"
+        }
+      ],
+      "services": {
+        "analytics_service": {
+          "status": 1
+        },
+        "appinvite_service": {
+          "status": 2,
+          "other_platform_oauth_client": [
+            {
+              "client_id": "915692136402-65tlsqp1tn13s3ihjpat5ici308si7t3.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        },
+        "ads_service": {
+          "status": 2
+        }
+      }
+    },
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:915692136402:android:b5d75907de594a2d",
+        "android_client_info": {
+          "package_name": "com.google.firebase.codelab.friendlychat"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "915692136402-iqjphs6flh1jmglnng3btu26q11eb6bc.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.google.firebase.codelab.friendlychat",
+            "certificate_hash": "C423CF4191ABBECBD4E2DA1E0917EA612948E93F"
+          }
+        },
+        {
+          "client_id": "915692136402-65tlsqp1tn13s3ihjpat5ici308si7t3.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyDJHbIVX9Lk8yfFEi9U8I6zvKGaZhD3AQg"
+        }
+      ],
+      "services": {
+        "analytics_service": {
+          "status": 1
+        },
+        "appinvite_service": {
+          "status": 2,
+          "other_platform_oauth_client": [
+            {
+              "client_id": "915692136402-65tlsqp1tn13s3ihjpat5ici308si7t3.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        },
+        "ads_service": {
+          "status": 2
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

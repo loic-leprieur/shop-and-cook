@@ -8,16 +8,16 @@ import android.widget.ArrayAdapter;
 import android.widget.ImageView;
 import android.widget.TextView;
 
-public class WebArrayAdapter extends ArrayAdapter<String>{
+public class RecipeArrayAdapter extends ArrayAdapter<String>{
 
     private final Activity context;
-    private final String[] web;
+    private final String[] recipe_title;
     private final Integer[] imageId;
 
-    public WebArrayAdapter(Activity context, String[] web, Integer[] imageId) {
+    public RecipeArrayAdapter(Activity context, String[] web, Integer[] imageId) {
         super(context, R.layout.list_single, web);
         this.context = context;
-        this.web = web;
+        this.recipe_title = web;
         this.imageId = imageId;
 
     }
@@ -28,7 +28,7 @@ public class WebArrayAdapter extends ArrayAdapter<String>{
         TextView txtTitle = (TextView) rowView.findViewById(R.id.recipe_txt);
 
         ImageView imageView = (ImageView) rowView.findViewById(R.id.recipe_img);
-        txtTitle.setText(web[position]);
+        txtTitle.setText(recipe_title[position]);
 
         imageView.setImageResource(imageId[position]);
         return rowView;
