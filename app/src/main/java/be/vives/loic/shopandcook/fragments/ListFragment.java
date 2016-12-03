@@ -1,12 +1,16 @@
-package be.vives.loic.shopandcook;
+package be.vives.loic.shopandcook.fragments;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
-import android.widget.Toast;
+
+import be.vives.loic.shopandcook.R;
+import be.vives.loic.shopandcook.activities.RecipeDetailActivity;
+import be.vives.loic.shopandcook.models.RecipeArrayAdapter;
 
 /**
  * Created by LOIC on 03/12/2016.
@@ -61,7 +65,10 @@ public class ListFragment extends android.app.ListFragment implements AdapterVie
     // on click event handler : change to a new fragment details here
     @Override
     public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-        // Show the position and text from an item clicked
-        Toast.makeText(getActivity(), recipes_title[+position], Toast.LENGTH_SHORT).show();
+        Intent detailIntent = new Intent(getContext(), RecipeDetailActivity.class);
+
+        detailIntent.putExtra(DetailsFragment.ARG_ITEM_ID, id);
+
+        startActivity(detailIntent);
     }
 }
