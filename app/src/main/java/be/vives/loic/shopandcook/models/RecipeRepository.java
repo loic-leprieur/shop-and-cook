@@ -13,7 +13,7 @@ import be.vives.loic.shopandcook.models.Recipe;
  * Created by LOIC on 21/11/2016.
  */
 public class RecipeRepository {
-    private Map recipes = new HashMap();
+    public Map recipes = new HashMap<>();
 
     public RecipeRepository(Map recipes) {
         this.recipes = recipes;
