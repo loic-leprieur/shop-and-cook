@@ -1,20 +1,30 @@
 package be.vives.loic.shopandcook.models;
 
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
+import android.graphics.drawable.BitmapDrawable;
+
+import java.io.Serializable;
 import java.util.ArrayList;
+import java.util.BitSet;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+
+import be.vives.loic.shopandcook.R;
+import be.vives.loic.shopandcook.activities.MainActivity;
+import be.vives.loic.shopandcook.activities.RecipeDetailActivity;
 
 /**
  * A recipe combines ingredients and steps
  * to prepare a dish
  * Created by LOIC on 21/11/2016.
  */
-public class Recipe {
+public class Recipe implements Serializable{
     // unique identifier
     private int id;
 
-    private String image;
+    private Bitmap image;
 
     // describe the recipe
     private String title;
@@ -37,6 +47,7 @@ public class Recipe {
         this.ingredients = ingredients;
         this.steps = steps;
     }
+
 
     public int getId() {
         return this.id;
@@ -72,5 +83,13 @@ public class Recipe {
 
     public void setSteps(List steps) {
         this.steps = steps;
+    }
+
+    public Bitmap getImage() {
+        return image;
+    }
+
+    public void setImage(Bitmap image) {
+        this.image = image;
     }
 }
