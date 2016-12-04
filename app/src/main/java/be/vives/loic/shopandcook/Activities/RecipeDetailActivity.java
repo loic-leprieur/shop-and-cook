@@ -25,6 +25,10 @@ public class RecipeDetailActivity extends Activity {
         TextView title = (TextView) findViewById(R.id.recipe_title);
         title.setText(mRecipe.getTitle());
 
+        /* Add the ingredients to the view */
+        TextView ingredients = (TextView) findViewById(R.id.recipe_ingredients);
+        ingredients.setText(mRecipe.getIngredients().toString());
+
         /* Building the picture of the recipe */
         ImageView img = (ImageView) findViewById(R.id.recipe_picture);
 
