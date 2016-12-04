@@ -1,6 +1,7 @@
 package be.vives.loic.shopandcook.models;
 
 import java.io.Serializable;
+import java.io.StringReader;
 
 /**
  * all kind of categories
@@ -33,7 +34,8 @@ public class Ingredient implements Serializable{
      * @param category
      * @param name
      */
-    public Ingredient(CategoryIngredient category, String name) {
+    public Ingredient(int id, CategoryIngredient category, String name) {
+        this.id = id;
         this.category = category;
         this.name = name;
     }
@@ -60,5 +62,12 @@ public class Ingredient implements Serializable{
 
     public void setCategory(CategoryIngredient category) {
         this.category = category;
+    }
+
+    @Override
+    public String toString() {
+        return  "\n("+ id + ") " +
+                category.name().toUpperCase() + " " +
+                name;
     }
 }
