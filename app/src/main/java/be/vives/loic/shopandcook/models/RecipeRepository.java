@@ -12,6 +12,7 @@ import be.vives.loic.shopandcook.models.Recipe;
  *
  * Created by LOIC on 21/11/2016.
  */
+// @TODO : Implement methods fetching data from a REST DB into Recipe
 public class RecipeRepository {
     public Map recipes = new HashMap<>();
 

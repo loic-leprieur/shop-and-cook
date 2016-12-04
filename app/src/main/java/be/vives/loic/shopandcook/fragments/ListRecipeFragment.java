@@ -19,6 +19,7 @@ import be.vives.loic.shopandcook.models.RecipeRepository;
  * Created by LOIC on 03/12/2016.
  */
 
+// @TODO : Fetch recipe from an API
 public class ListRecipeFragment extends ListFragment implements AdapterView.OnItemClickListener {
 
     // temporary list, will be replaced by a DB of 10 recipe
@@ -49,8 +50,6 @@ public class ListRecipeFragment extends ListFragment implements AdapterView.OnIt
     // all local recipes
     public RecipeRepository repo = new RecipeRepository();
 
-    public Recipe selectedRecipe;
-
     @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
@@ -64,21 +63,6 @@ public class ListRecipeFragment extends ListFragment implements AdapterView.OnIt
         // define the adapter for the list of recipes (picture + title)
         RecipeArrayAdapter adapter = new RecipeArrayAdapter(getActivity(),
                 recipes_title, imageId);
-
-        /*
-        int nbRecipes = repo.recipes.size();
-
-
-        String[] t_recipe_txt = new String[nbRecipes];
-        Integer[] t_recipe_id = new Integer[nbRecipes];
-
-        for(int i = 0 ; i < nbRecipes ; i++){
-            t_recipe_id[i] = (Recipe) repo.recipes.get(i).getId();
-            t_recipe_txt[i] = (Recipe) repo.recipes.get(i).getTitle();
-        }
-        */
-
-        //RecipeArrayAdapter adapter = new RecipeArrayAdapter(getActivity(), t_recipe_txt, t_recipe_id);
 
         // define the adapter to use
         setListAdapter(adapter);
