@@ -19,7 +19,7 @@
     <ImageView
         android:layout_width="100dp"
         android:layout_height="200dp"
-        app:srcCompat="@drawable/image1"
+        app:srcCompat="@android:drawable/ic_delete"
         android:id="@+id/recipe_picture"
         android:layout_marginStart="13dp"
         android:adjustViewBounds="false"
