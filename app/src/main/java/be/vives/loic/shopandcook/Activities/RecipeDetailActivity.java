@@ -18,12 +18,18 @@ public class RecipeDetailActivity extends Activity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_details2);
 
+        // get the object Recipe passed by intent from fragment list
         Recipe mRecipe = (Recipe) getIntent().getExtras().getSerializable("selectedRecipe");
 
+        /* set the title of the recipe */
         TextView title = (TextView) findViewById(R.id.recipe_title);
         title.setText(mRecipe.getTitle());
 
+        /* Building the picture of the recipe */
         ImageView img = (ImageView) findViewById(R.id.recipe_picture);
-        img.setImageBitmap(((BitmapDrawable) getResources().getDrawable(R.drawable.image1)).getBitmap());
+
+        // Pick the picture with the id of the recipe
+        int resdID = getResources().getIdentifier("image"+mRecipe.getId(), "drawable", getPackageName());
+        img.setImageResource(resdID);
     }
 }
