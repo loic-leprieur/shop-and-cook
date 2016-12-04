@@ -8,7 +8,8 @@ import com.google.firebase.database.FirebaseDatabase;
 
 import be.vives.loic.shopandcook.R;
 
-// TODO : From in-memory database to Firebase DB
+// TODO : From in-memory database to Firebase DB for profiles
+// TODO : Create a navigationDrawer and a personnalized toolbar
 public class MainActivity extends AppCompatActivity {
 
     // Firebase database fields
