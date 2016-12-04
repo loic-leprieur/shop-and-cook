@@ -1,5 +1,7 @@
 package be.vives.loic.shopandcook.models;
 
+import java.io.Serializable;
+
 /**
  * all kind of categories
  * for an ingredient
@@ -16,7 +18,7 @@ enum CategoryIngredient{
  * Element composing a Recipe
  * Created by LOIC on 21/11/2016.
  */
-public class Ingredient {
+public class Ingredient implements Serializable{
     private int id;
 
     // describe the ingredient
