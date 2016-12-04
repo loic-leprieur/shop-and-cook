@@ -64,6 +64,23 @@ public class ListRecipeFragment extends ListFragment implements AdapterView.OnIt
         // define the adapter for the list of recipes (picture + title)
         RecipeArrayAdapter adapter = new RecipeArrayAdapter(getActivity(),
                 recipes_title, imageId);
+
+        /*
+        int nbRecipes = repo.recipes.size();
+
+
+        String[] t_recipe_txt = new String[nbRecipes];
+        Integer[] t_recipe_id = new Integer[nbRecipes];
+
+        for(int i = 0 ; i < nbRecipes ; i++){
+            t_recipe_id[i] = (Recipe) repo.recipes.get(i).getId();
+            t_recipe_txt[i] = (Recipe) repo.recipes.get(i).getTitle();
+        }
+        */
+
+        //RecipeArrayAdapter adapter = new RecipeArrayAdapter(getActivity(), t_recipe_txt, t_recipe_id);
+
+        // define the adapter to use
         setListAdapter(adapter);
 
         // attach the listener to the list
@@ -75,7 +92,8 @@ public class ListRecipeFragment extends ListFragment implements AdapterView.OnIt
     public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
         Intent detailIntent = new Intent(getContext(), RecipeDetailActivity.class);
 
-        detailIntent.putExtra("selectedRecipe", repo.findById(position+1).getTitle());
+        //detailIntent.putExtra("selectedRecipe", repo.findById(position+1).getTitle());
+        detailIntent.putExtra("selectedRecipe", repo.findById(position+1));
 
         startActivity(detailIntent);
     }
