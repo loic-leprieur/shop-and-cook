@@ -1,10 +1,13 @@
 package be.vives.loic.shopandcook.activities;
 
 import android.app.Activity;
+import android.graphics.drawable.BitmapDrawable;
 import android.os.Bundle;
+import android.widget.ImageView;
 import android.widget.TextView;
 
 import be.vives.loic.shopandcook.R;
+import be.vives.loic.shopandcook.models.Recipe;
 
 /**
  * Created by LOIC on 03/12/2016.
@@ -15,9 +18,12 @@ public class RecipeDetailActivity extends Activity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_details2);
 
-        String recipe_title = getIntent().getExtras().getString("selectedRecipe");
+        Recipe mRecipe = (Recipe) getIntent().getExtras().getSerializable("selectedRecipe");
 
         TextView title = (TextView) findViewById(R.id.recipe_title);
-        title.setText(recipe_title);
+        title.setText(mRecipe.getTitle());
+
+        ImageView img = (ImageView) findViewById(R.id.recipe_picture);
+        img.setImageBitmap(((BitmapDrawable) getResources().getDrawable(R.drawable.image1)).getBitmap());
     }
 }
