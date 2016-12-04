@@ -22,14 +22,18 @@ public class RecipeRepository {
 
     public RecipeRepository() {
         List ingredients = new ArrayList();
-        ingredients.add(new Ingredient(CategoryIngredient.Cheese, "Emmental"));
+        ingredients.add(new Ingredient(1, CategoryIngredient.Meat, "Mouton"));
+        ingredients.add(new Ingredient(2, CategoryIngredient.Vegetable, "Haricots verts"));
+        ingredients.add(new Ingredient(3, CategoryIngredient.Seasoning, "Thym"));
+        ingredients.add(new Ingredient(4, CategoryIngredient.Fruit, "Pomme golden"));
+        ingredients.add(new Ingredient(5, CategoryIngredient.Cheese, "Emmental"));
 
         List steps = new ArrayList();
         steps.add("Etape 1 : Lorem ipsum");
         steps.add("Etape 2 : dolor sit");
         steps.add("Etape 3 : amet.");
 
-        recipes.put(1, new Recipe(1, "Fondants au chocolat", ingredients, steps));
+        recipes.put(1, new Recipe(1, "Fondants AU chocolat", ingredients, steps));
         recipes.put(2, new Recipe(2, "Tarte au citron meringuée", ingredients, steps));
         recipes.put(3, new Recipe(3, "Filet mignon en croûte", ingredients, steps));
         recipes.put(4, new Recipe(4, "Original American Cookies", ingredients, steps));
@@ -50,7 +54,6 @@ public class RecipeRepository {
 
         if(r == null){
             r = new Recipe(0, "NOT FOUND", null, null);
-
         }
 
         System.err.println(r.getTitle());
