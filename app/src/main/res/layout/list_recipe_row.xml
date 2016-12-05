@@ -1,17 +1,31 @@
 <?xml version="1.0" encoding="utf-8"?>
-<TableLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:layout_width="match_parent" android:layout_height="match_parent">
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="50dp">
 
-    <TableRow>
-        <ImageView
-            android:id="@+id/list_recipe_img"
-            android:layout_width="50dp"
-            android:layout_height="50dp"/>
+    <ImageView
+        android:id="@+id/list_recipe_img"
+        android:layout_width="match_parent"
+        android:layout_height="80dp"
+        android:scaleType="centerCrop"
+        android:contentDescription="recipe picture"
+        android:alpha="1" />
 
-        <TextView
-            android:id="@+id/list_recipe_txt"
-            android:layout_width="wrap_content"
-            android:layout_height="50dp" />
+    <TextView
+        android:id="@+id/list_recipe_txt"
+        android:layout_gravity="center_horizontal"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_centerInParent="true"
+        android:textAppearance="@style/TextAppearance.AppCompat.Light.SearchResult.Title"
+        android:typeface="sans"
+        android:textColor="?android:attr/textColorPrimaryInverseNoDisable"
+        android:textStyle="normal|bold"
+        android:textSize="20sp"
+        android:fontFamily="sans-serif-medium"
+        android:selectAllOnFocus="false"
+        android:alpha="1" />
 
-    </TableRow>
-</TableLayout>
+
+
+</RelativeLayout>
