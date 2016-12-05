@@ -33,7 +33,7 @@ public class RecipeRepository {
         steps.add("Etape 2 : dolor sit");
         steps.add("Etape 3 : amet.");
 
-        recipes.put(1, new Recipe(1, "Fondants AU chocolat", ingredients, steps));
+        recipes.put(1, new Recipe(1, "Fondants au chocolat", ingredients, steps));
         recipes.put(2, new Recipe(2, "Tarte au citron meringuée", ingredients, steps));
         recipes.put(3, new Recipe(3, "Filet mignon en croûte", ingredients, steps));
         recipes.put(4, new Recipe(4, "Original American Cookies", ingredients, steps));
