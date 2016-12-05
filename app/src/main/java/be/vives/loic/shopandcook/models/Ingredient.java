@@ -12,7 +12,8 @@ enum CategoryIngredient{
     Cheese,
     Vegetable,
     Fruit,
-    Seasoning
+    Seasoning,
+    Baking
 }
 
 /**
