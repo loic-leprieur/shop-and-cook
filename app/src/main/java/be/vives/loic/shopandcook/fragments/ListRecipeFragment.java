@@ -9,6 +9,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
 
+
 import be.vives.loic.shopandcook.R;
 import be.vives.loic.shopandcook.activities.RecipeDetailActivity;
 import be.vives.loic.shopandcook.models.Recipe;
@@ -49,6 +50,9 @@ public class ListRecipeFragment extends ListFragment implements AdapterView.OnIt
 
     // all local recipes
     public RecipeRepository repo = new RecipeRepository();
+
+    public ListRecipeFragment() {
+    }
 
     @Nullable
     @Override
