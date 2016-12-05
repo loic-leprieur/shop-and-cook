@@ -10,6 +10,8 @@ import android.view.ViewGroup;
 import android.widget.AdapterView;
 
 
+import java.util.List;
+
 import be.vives.loic.shopandcook.R;
 import be.vives.loic.shopandcook.activities.RecipeDetailActivity;
 import be.vives.loic.shopandcook.models.Recipe;
@@ -26,15 +28,7 @@ public class ListRecipeFragment extends ListFragment implements AdapterView.OnIt
     // temporary list, will be replaced by a DB of 10 recipe
     // those 10 recipes will be randomly choose and
     // deleted changed at each refreshment of the activity
-    String[] recipes_title = {
-            "Fondants au chocolat",
-            "Tarte au citron meringuée",
-            "Filet mignon en croûte",
-            "Original American Cookies",
-            "Cheese cake",
-            "Lasagnes à la bolognaise",
-            "Boeuf Bourguignon"
-    };
+    String[] recipes_title;
 
     // pictures will be temporarly stored or accessed
     // by their URL and displayed in the list
@@ -54,6 +48,18 @@ public class ListRecipeFragment extends ListFragment implements AdapterView.OnIt
     public ListRecipeFragment() {
     }
 
+    public void setRecipes_title() {
+        List<Recipe> recipes = repo.findAll();
+        int nb_recipes = recipes.size();
+        this.recipes_title = new String[nb_recipes];
+        Recipe r = null;
+
+        for(int i=0; i < nb_recipes; i++){
+            r = recipes.get(i);
+            this.recipes_title[r.getId()-1] = r.getTitle();
+        }
+    }
+
     @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
@@ -63,6 +69,9 @@ public class ListRecipeFragment extends ListFragment implements AdapterView.OnIt
     @Override
     public void onActivityCreated(Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
+
+        // affect each recipe textview with its title
+        setRecipes_title();
 
         // define the adapter for the list of recipes (picture + title)
         RecipeArrayAdapter adapter = new RecipeArrayAdapter(getActivity(),
