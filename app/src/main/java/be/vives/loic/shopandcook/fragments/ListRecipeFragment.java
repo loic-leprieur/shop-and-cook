@@ -32,6 +32,7 @@ public class ListRecipeFragment extends ListFragment implements AdapterView.OnIt
 
     // pictures will be temporarly stored or accessed
     // by their URL and displayed in the list
+    // @TODO : store on Firebase with URL
     Integer[] imageId = {
             R.drawable.image1,
             R.drawable.image2,
