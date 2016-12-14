@@ -1,14 +1,26 @@
 package be.vives.loic.shopandcook.activities;
 
 
+import android.content.Intent;
 import android.os.AsyncTask;
-import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.support.annotation.NonNull;
+import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
+import android.view.Menu;
+import android.view.MenuItem;
+import android.widget.ArrayAdapter;
+import android.widget.ListView;
 import android.widget.Toast;
 
+import com.google.android.gms.auth.api.Auth;
+import com.google.android.gms.auth.api.signin.GoogleSignInApi;
+import com.google.android.gms.common.ConnectionResult;
+import com.google.android.gms.common.api.GoogleApiClient;
+import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.FirebaseDatabase;
 
+import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
@@ -16,6 +28,8 @@ import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
+import java.util.ArrayList;
+import java.util.List;
 
 import be.vives.loic.shopandcook.R;
 import cz.msebera.android.httpclient.HttpResponse;
@@ -23,14 +37,27 @@ import cz.msebera.android.httpclient.client.HttpClient;
 import cz.msebera.android.httpclient.client.methods.HttpGet;
 import cz.msebera.android.httpclient.impl.client.DefaultHttpClient;
 
-import static java.security.AccessController.getContext;
-
 // TODO : From in-memory database to Firebase DB for profiles
 // TODO : Create a navigationDrawer and a personnalized toolbar
 public class MainActivity extends AppCompatActivity {
 
     // Firebase database fields
-    private FirebaseDatabase mFirebaseDB;
+    //private FirebaseDatabase mFirebaseDB;
+
+    private List recipes_title = new ArrayList<>();
+    private List recipes_imgURL = new ArrayList<String>(){
+        @Override
+        public boolean add(String s) {
+            boolean isNewValue = true;
+
+            if(this.contains(s)){
+               isNewValue = false;
+            }
+            return isNewValue;
+        }
+    };
+    private FirebaseAuth mFirebaseAuth;
+    private GoogleApiClient mGoogleApiClient;
 
     /**
      * At activity launch, create a list of items,
@@ -50,11 +77,25 @@ public class MainActivity extends AppCompatActivity {
         DatabaseReference mDatabase = FirebaseDatabase.getInstance().getReference();
         */
 
-        //new HttpAsyncTask().execute("http://api.wunderground.com/api/19f29e7113929b18/conditions/q/BE/Kortrijk.json");
-        new HttpAsyncTask().execute("https://community-food2fork.p.mashape.com/search?key=d73bc57bb507293fcd95b6c383ce59ca&q=shredded+chicken");
+        // Initialize Firebase Auth
+        mFirebaseAuth = FirebaseAuth.getInstance();
 
+        // initialize the api google client
+        mGoogleApiClient = new GoogleApiClient.Builder(this)
+                .enableAutoManage(this /* FragmentActivity */, new GoogleApiClient.OnConnectionFailedListener() {
+                    @Override
+                    public void onConnectionFailed(@NonNull ConnectionResult connectionResult) {
+                    }
+                } /* OnConnectionFailedListener */)
+                .addApi(Auth.GOOGLE_SIGN_IN_API)
+                .build();
+
+        // &q=shredded%20chicken : research with ingredients
+        // &sort= sort results
+        // &page = give more results
+        new HttpAsyncTask()
+                .execute("http://food2fork.com/api/search?key=d73bc57bb507293fcd95b6c383ce59ca");
     }
-
 
     class HttpAsyncTask extends AsyncTask<String, Void, String> {
 
@@ -70,17 +111,29 @@ public class MainActivity extends AppCompatActivity {
             try {
                 JSONObject json = new JSONObject(result);
 
-                Toast.makeText(getApplicationContext(), "Received!", Toast.LENGTH_LONG).show();
+                JSONArray jsonRecipesSearchResult = json.getJSONArray("recipes");
 
-                JSONObject jsonCurrentWeather = json.getJSONObject("current_observation");
-                temp = Double.toString(jsonCurrentWeather.getDouble("temp_c"));
+                JSONObject jsonRecipe = null;
 
+                recipes_title = new ArrayList<String>();
+
+                for(int i=1; i < 30; i++){
+                    jsonRecipe = (JSONObject) jsonRecipesSearchResult.get(i);
+                    if(jsonRecipe.has("title")){
+                        recipes_title.add(jsonRecipe.getString("title"));
+                        //recipes_imgURL.add(jsonRecipe.getString("image_url"));
+                    }
+                }
+
+                ListView list = (ListView) findViewById(R.id.listRecipes);
+                list.setAdapter(new ArrayAdapter<String>(getApplicationContext(), android.R.layout.simple_list_item_1, recipes_title));
+
+                Toast.makeText(getApplicationContext(),json.getInt("count")+" recipes found", Toast.LENGTH_LONG).show();
 
             } catch (JSONException e) {
 
                 e.printStackTrace();
             }
-
         }
     }
 
@@ -124,6 +177,23 @@ public class MainActivity extends AppCompatActivity {
             e.printStackTrace();
         }
         return result;
+    }
+
+    public boolean onCreateOptionsMenu(Menu menu) {
+        getMenuInflater().inflate(R.menu.main_menu, menu);
+        return true;
+    }
+
+    public boolean onOptionsItemSelected(MenuItem item) {
+        switch (item.getItemId()) {
+            case R.id.action_signout:
+            /* DO EDIT */
+                mFirebaseAuth.signOut();
+                Auth.GoogleSignInApi.signOut(mGoogleApiClient);
+                startActivity(new Intent(this, SignInActivity.class));
+                return true;
+        }
+        return super.onOptionsItemSelected(item);
     }
 
 }

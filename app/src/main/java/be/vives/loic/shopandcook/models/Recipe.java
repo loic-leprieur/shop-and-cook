@@ -22,7 +22,7 @@ import be.vives.loic.shopandcook.activities.RecipeDetailActivity;
  */
 public class Recipe implements Serializable{
     // unique identifier
-    private int id;
+    private String id;
 
     private Bitmap image;
 
@@ -41,7 +41,7 @@ public class Recipe implements Serializable{
      * @param ingredients : list of required ingredients
      * @param steps : how to perform the recipe by steps
      */
-    public Recipe(int id, String title, List ingredients, List steps) {
+    public Recipe(String id, String title, List ingredients, List steps) {
         this.id = id;
         this.title = title;
         this.ingredients = ingredients;
@@ -49,15 +49,11 @@ public class Recipe implements Serializable{
     }
 
 
-    public int getId() {
+    public String getId() {
         return this.id;
     }
 
-    public String getIdStr() {
-        return Integer.toString(id);
-    }
-
-    public void setId(int id) {
+    public void setId(String id) {
         this.id = id;
     }
 

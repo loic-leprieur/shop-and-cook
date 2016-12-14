@@ -13,6 +13,7 @@ import android.widget.AdapterView;
 import java.util.List;
 
 import be.vives.loic.shopandcook.R;
+import be.vives.loic.shopandcook.activities.MainActivity;
 import be.vives.loic.shopandcook.activities.RecipeDetailActivity;
 import be.vives.loic.shopandcook.models.Recipe;
 import be.vives.loic.shopandcook.models.RecipeArrayAdapter;
@@ -57,7 +58,7 @@ public class ListRecipeFragment extends ListFragment implements AdapterView.OnIt
 
         for(int i=0; i < nb_recipes; i++){
             r = recipes.get(i);
-            this.recipes_title[r.getId()-1] = r.getTitle();
+            this.recipes_title[Integer.getInteger(r.getId())-1] = r.getTitle();
         }
     }
 
@@ -83,6 +84,7 @@ public class ListRecipeFragment extends ListFragment implements AdapterView.OnIt
 
         // attach the listener to the list
         getListView().setOnItemClickListener(this);
+
     }
 
     // on click event handler : change to a new fragment details here
