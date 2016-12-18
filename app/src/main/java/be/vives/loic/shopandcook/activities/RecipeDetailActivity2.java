@@ -46,7 +46,7 @@ public class RecipeDetailActivity2 extends Activity{
         // get the object Recipe passed by intent from fragment list
         //Recipe mRecipe = (Recipe) getIntent().getExtras().getSerializable("selectedRecipe");
 
-        String recipe_id = getIntent().getExtras().getString("selectedRecipe");
+        String recipe_id = getIntent().getExtras().getString("recipe_id");
 
         /*
         new RecipeDetailActivity2.HttpAsyncTask()
@@ -79,12 +79,11 @@ public class RecipeDetailActivity2 extends Activity{
                 Bitmap image = BitmapFactory.decodeStream(url.openConnection().getInputStream());
 
                 JSONArray jsonRecipeIngredients = jsonRootObject.getJSONArray("ingredients");
-                List ingredients = new ArrayList<String>();
+                List ingredients = new ArrayList<>();
 
                 for (int i = 0; i < jsonRecipeIngredients.length(); i++) {
-                    ingredients.add((String) jsonRecipeIngredients.get(i));
+                    ingredients.add(jsonRecipeIngredients.get(i));
                 }
-
 
             /* set the title of the recipe */
                 TextView title = (TextView) findViewById(R.id.recipe_title);
@@ -105,7 +104,6 @@ public class RecipeDetailActivity2 extends Activity{
             } catch (IOException e) {
                 e.printStackTrace();
             }
-
         }
     }
 
