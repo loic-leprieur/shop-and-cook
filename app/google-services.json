@@ -15,6 +15,14 @@
       },
       "oauth_client": [
         {
+          "client_id": "915692136402-cod09d433bcdfv60lsnij9oo3ttce546.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "be.vives.loic.shopandcook",
+            "certificate_hash": "A65571FBE22189250BE1589FF0CB9383D66181E4"
+          }
+        },
+        {
           "client_id": "915692136402-co1apbu8j20shg0onuseinkstj4095ej.apps.googleusercontent.com",
           "client_type": 1,
           "android_info": {
