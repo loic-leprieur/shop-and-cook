@@ -12,4 +12,5 @@
         <item>Persil</item>
         <item>Chocolat</item>
     </string-array>
+    <string name="title_activity_main">MainActivity</string>
 </resources>
