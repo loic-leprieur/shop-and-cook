@@ -1,19 +1,10 @@
 package be.vives.loic.shopandcook.models;
 
 import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
-import android.graphics.drawable.BitmapDrawable;
 
 import java.io.Serializable;
 import java.util.ArrayList;
-import java.util.BitSet;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
-
-import be.vives.loic.shopandcook.R;
-import be.vives.loic.shopandcook.activities.MainActivity;
-import be.vives.loic.shopandcook.activities.RecipeDetailActivity;
 
 /**
  * A recipe combines ingredients and steps
