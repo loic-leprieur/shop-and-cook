@@ -1,6 +1,5 @@
 package be.vives.loic.shopandcook.models;
 
-import android.content.res.Resources;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 
@@ -10,9 +9,6 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-
-import be.vives.loic.shopandcook.R;
-import be.vives.loic.shopandcook.models.Recipe;
 
 /**
  * Gather local recipes in a memory-database
@@ -24,29 +20,6 @@ public class RecipeRepository {
     public Map recipes = new HashMap<Integer, Recipe>();
 
     public RecipeRepository() {
-
-        if(recipes.size() == 0){
-
-            List ingredients = new ArrayList();
-            ingredients.add(new Ingredient(1, CategoryIngredient.Meat, "Mouton"));
-            ingredients.add(new Ingredient(2, CategoryIngredient.Vegetable, "Haricots verts"));
-            ingredients.add(new Ingredient(3, CategoryIngredient.Seasoning, "Thym"));
-            ingredients.add(new Ingredient(4, CategoryIngredient.Fruit, "Pomme golden"));
-            ingredients.add(new Ingredient(5, CategoryIngredient.Cheese, "Emmental"));
-
-            List steps = new ArrayList();
-            steps.add("Etape 1 : Lorem ipsum");
-            steps.add("Etape 2 : dolor sit");
-            steps.add("Etape 3 : amet.");
-
-            recipes.put(1, new Recipe("1", "Fondants au chocolat", ingredients, steps));
-            recipes.put(2, new Recipe("2", "Tarte au citron meringuée", ingredients, steps));
-            recipes.put(3, new Recipe("3", "Filet mignon en croûte", ingredients, steps));
-            recipes.put(4, new Recipe("4", "Original American Cookies", ingredients, steps));
-            recipes.put(5, new Recipe("5", "Cheese cake", ingredients, steps));
-            recipes.put(6, new Recipe("6", "Lasagnes à la bolognaise", ingredients, steps));
-            recipes.put(7, new Recipe("7", "Boeuf Bourguignon", ingredients, steps));
-        }
     }
 
     public RecipeRepository(Map recipes) {
@@ -68,7 +41,7 @@ public class RecipeRepository {
     }
 
     // BY ID
-    public Recipe findById(int id){
+    public Recipe findById(int id) throws IOException {
         Recipe r = (Recipe) recipes.get(id);
 
         if(r == null){
