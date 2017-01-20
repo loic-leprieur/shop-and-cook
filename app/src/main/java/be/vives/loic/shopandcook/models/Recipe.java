@@ -23,9 +23,6 @@ public class Recipe implements Serializable{
     // Required ingredients by Key = ingredient's name
     private List ingredients = new ArrayList();
 
-    // All steps to perform the recipe
-    private List steps = new ArrayList();
-
     /**
      * Construct a recipe with title, ingredients and steps
      * @param title : description
@@ -36,7 +33,6 @@ public class Recipe implements Serializable{
         this.id = id;
         this.title = title;
         this.ingredients = ingredients;
-        this.steps = steps;
     }
 
 
@@ -62,14 +58,6 @@ public class Recipe implements Serializable{
 
     public void setIngredients(List ingredients) {
         this.ingredients = ingredients;
-    }
-
-    public List getSteps() {
-        return steps;
-    }
-
-    public void setSteps(List steps) {
-        this.steps = steps;
     }
 
     public Bitmap getImage() {

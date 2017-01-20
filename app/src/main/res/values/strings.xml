@@ -1,5 +1,5 @@
 <resources>
-    <string name="app_name">Shop and Cook</string>
+    <string name="app_name">Shop\u0026Cook</string>
 
     <string-array name="Ingredients">
         <item>Huile</item>

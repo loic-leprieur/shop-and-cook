@@ -2,10 +2,15 @@ package be.vives.loic.shopandcook.activities;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.os.StrictMode;
 import android.support.annotation.NonNull;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
+import android.view.Menu;
+import android.view.MenuItem;
 import android.view.View;
+import android.widget.ImageView;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.google.android.gms.auth.api.Auth;
@@ -25,6 +30,7 @@ import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.GoogleAuthProvider;
 
 import be.vives.loic.shopandcook.R;
+import be.vives.loic.shopandcook.models.User;
 
 public class SignInActivity extends AppCompatActivity implements
         GoogleApiClient.OnConnectionFailedListener, View.OnClickListener {
@@ -39,6 +45,8 @@ public class SignInActivity extends AppCompatActivity implements
     // Firebase instance variables
     private FirebaseAuth mFirebaseAuth;
 
+    public static User user;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -46,9 +54,21 @@ public class SignInActivity extends AppCompatActivity implements
 
         // Assign fields
         mSignInButton = (SignInButton) findViewById(R.id.sign_in_button);
-
-        // Set click listeners
         mSignInButton.setOnClickListener(this);
+        TextView signInBtnText = (TextView) mSignInButton.getChildAt(0);
+
+        // user already connected
+        if (user != null) {
+            TextView mTextView = (TextView) findViewById(R.id.currentUsername);
+            mTextView.setText(user.getName() + "\n" + user.getEmail());
+            ImageView mImageView = (ImageView) findViewById((R.id.userPicture));
+            mImageView.setImageBitmap(user.getPicture());
+            signInBtnText.setText("Log out");
+        } else {
+            signInBtnText.setText("Log in");
+        }
+
+
 
         // Configure Google Sign In
         GoogleSignInOptions gso = new GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)
@@ -65,11 +85,32 @@ public class SignInActivity extends AppCompatActivity implements
     }
 
     @Override
-    public void onClick(View v) {
-        switch (v.getId()) {
-            case R.id.sign_in_button:
-                signIn();
+    public boolean onCreateOptionsMenu(Menu menu) {
+        getMenuInflater().inflate(R.menu.main_menu, menu);
+        return true;
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        Intent i = null;
+        switch (item.getItemId()) {
+            case R.id.action_home:
+                i = new Intent(getApplicationContext(), HomeActivity.class);
                 break;
+            case R.id.action_signout:
+                i = new Intent(getApplicationContext(), SignInActivity.class);
+                break;
+        }
+        startActivity(i);
+        return super.onOptionsItemSelected(item);
+    }
+
+    @Override
+    public void onClick(View v) {
+        if (user != null) {
+            signOut();
+        } else {
+            signIn();
         }
     }
 
@@ -83,6 +124,10 @@ public class SignInActivity extends AppCompatActivity implements
                 new ResultCallback<Status>() {
                     @Override
                     public void onResult(@NonNull Status status) {
+                        mGoogleApiClient = null; // reset user credidentials
+                        user = null;
+                        Intent refresh = new Intent(getApplicationContext(), SignInActivity.class);
+                        startActivity(refresh);
                         Toast.makeText(getApplicationContext(), "Disconnected", Toast.LENGTH_SHORT).show();
                     }
                 }
@@ -117,7 +162,11 @@ public class SignInActivity extends AppCompatActivity implements
     }
 
     private void firebaseAuthWithGoogle(GoogleSignInAccount acct) {
+        StrictMode.ThreadPolicy policy = new StrictMode.ThreadPolicy.Builder().permitAll().build();
+        StrictMode.setThreadPolicy(policy);
+
         Log.d(TAG, "firebaseAuthWithGooogle:" + acct.getId());
+
         AuthCredential credential = GoogleAuthProvider.getCredential(acct.getIdToken(), null);
         mFirebaseAuth.signInWithCredential(credential)
                 .addOnCompleteListener(this, new OnCompleteListener<AuthResult>() {
@@ -133,6 +182,10 @@ public class SignInActivity extends AppCompatActivity implements
                             Toast.makeText(SignInActivity.this, "Authentication failed.",
                                     Toast.LENGTH_SHORT).show();
                         } else {
+                            //Log.d("URL",mFirebaseAuth.getCurrentUser().getPhotoUrl().toString());
+                            user = new User(mFirebaseAuth.getCurrentUser().getEmail(),
+                                    mFirebaseAuth.getCurrentUser().getDisplayName(),
+                                    mFirebaseAuth.getCurrentUser().getPhotoUrl().toString());
                             startActivity(new Intent(SignInActivity.this, HomeActivity.class));
                             finish();
                         }

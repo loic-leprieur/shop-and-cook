@@ -1,18 +1,17 @@
-package be.vives.loic.shopandcook.activities;
+package be.vives.loic.shopandcook.fragments;
 
-import android.content.Intent;
+import android.app.Fragment;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.os.StrictMode;
+import android.support.annotation.Nullable;
 import android.support.design.widget.FloatingActionButton;
-import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
-import android.view.Menu;
-import android.view.MenuItem;
+import android.view.LayoutInflater;
 import android.view.View;
-import android.widget.AdapterView;
+import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
 import android.widget.ImageView;
 import android.widget.ListView;
@@ -31,8 +30,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import be.vives.loic.shopandcook.R;
-import be.vives.loic.shopandcook.fragments.FavoriteFragment;
-import be.vives.loic.shopandcook.fragments.ShoppingFragment;
+import be.vives.loic.shopandcook.activities.RecipesActivity;
 import be.vives.loic.shopandcook.models.Recipe;
 import cz.msebera.android.httpclient.HttpResponse;
 import cz.msebera.android.httpclient.client.HttpClient;
@@ -41,27 +39,31 @@ import cz.msebera.android.httpclient.impl.client.DefaultHttpClient;
 
 /**
  * Created by LOIC on 03/12/2016.
- * @TODO : Add a 'favorite/like' button then add the current recipe to a list
  */
-public class RecipeDetailActivity extends AppCompatActivity {
 
+public class DetailsFragment extends Fragment {
+
+    private View view;
+    private RecipesActivity activity;
     private Recipe mRecipe;
     private ArrayList<String> ingredients;
     Boolean isFavorite = false;
     FloatingActionButton fab;
 
     @Override
-    protected void onCreate(Bundle savedInstanceState) {
+    public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_details);
+    }
 
-        String recipe_id = getIntent().getExtras().getString("recipe_id");
-        String recipe_title = getIntent().getExtras().getString("recipe_title");
-        mRecipe = new Recipe(recipe_id, recipe_title, null, null);
+    @Nullable
+    @Override
+    public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
+        view = inflater.inflate(R.layout.fragment_details, container, false);
+        activity = (RecipesActivity) getActivity();
 
-        findViewById(R.id.progress_bar).setVisibility(View.VISIBLE);
+        view.findViewById(R.id.progress_bar).setVisibility(View.VISIBLE);
 
-        fab = (FloatingActionButton) findViewById(R.id.addTofavoriteBtn);
+        fab = (FloatingActionButton) view.findViewById(R.id.addTofavoriteBtn);
 
         if (isFavorite) {
             fab.setImageResource(R.drawable.ic_favorite);
@@ -69,57 +71,40 @@ public class RecipeDetailActivity extends AppCompatActivity {
             fab.setImageResource(R.drawable.ic_favorite_border);
         }
 
-        findViewById(R.id.addTofavoriteBtn).setOnClickListener(new View.OnClickListener() {
+        view.findViewById(R.id.addTofavoriteBtn).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 if (!isFavorite) {
                     fab.setImageResource(R.drawable.ic_favorite);
                     isFavorite = !isFavorite;
                     addRecipeToFavorites(mRecipe);
-                    Toast.makeText(getApplicationContext(), mRecipe.getTitle() + " added to favorites", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(activity.getApplicationContext(), mRecipe.getTitle() + " added to favorites", Toast.LENGTH_SHORT).show();
                 } else {
                     fab.setImageResource(R.drawable.ic_favorite_border);
                     isFavorite = !isFavorite;
                     removeRecipeFromFavorites(mRecipe);
-                    Toast.makeText(getApplicationContext(), mRecipe.getTitle() + " removed from favorites", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(activity.getApplicationContext(), mRecipe.getTitle() + " removed from favorites", Toast.LENGTH_SHORT).show();
                 }
             }
         });
 
         new LoadSingleRecipe()
-                .execute("http://food2fork.com/api/get?key=d73bc57bb507293fcd95b6c383ce59ca&rId=" + recipe_id);
+                .execute("http://food2fork.com/api/get?key=d73bc57bb507293fcd95b6c383ce59ca&rId=" + mRecipe.getId());
+        return super.onCreateView(inflater, container, savedInstanceState);
+
     }
 
-    private void addRecipeToFavorites(Recipe r) {
-        FavoriteFragment.favorites.add(r);
+    private void removeRecipeFromFavorites(Recipe mRecipe) {
+        FavoriteFragment.favorites.add(mRecipe);
     }
 
-    private void removeRecipeFromFavorites(Recipe r) {
-        FavoriteFragment.favorites.remove(r);
-    }
-
-    @Override
-    public boolean onCreateOptionsMenu(Menu menu) {
-        getMenuInflater().inflate(R.menu.recipe_menu, menu);
-        return true;
+    private void addRecipeToFavorites(Recipe mRecipe) {
+        FavoriteFragment.favorites.remove(mRecipe);
     }
 
     @Override
-    public boolean onOptionsItemSelected(MenuItem item) {
-        Intent i = null;
-        switch (item.getItemId()) {
-            case R.id.action_home:
-                i = new Intent(getApplicationContext(), HomeActivity.class);
-                break;
-            case R.id.action_signout:
-                i = new Intent(getApplicationContext(), SignInActivity.class);
-                break;
-            case R.id.action_back:
-                this.finish();
-        }
-        if (i != null)
-            startActivity(i);
-        return super.onOptionsItemSelected(item);
+    public void onActivityCreated(Bundle savedInstanceState) {
+        super.onActivityCreated(savedInstanceState);
     }
 
     private class LoadSingleRecipe extends AsyncTask<String, Void, String> {
@@ -151,28 +136,20 @@ public class RecipeDetailActivity extends AppCompatActivity {
                 }
 
             /* set the title of the recipe */
-                getSupportActionBar().setTitle(recipe_title);
+                activity.getActionBar().setTitle(recipe_title);
 
             /* Add the ingredients to the view */
-                ListView list_ingredients = (ListView) findViewById(R.id.recipe_ingredients);
-                list_ingredients.setAdapter(new ArrayAdapter<>(getApplicationContext(), android.R.layout.simple_list_item_1, ingredients));
-                list_ingredients.setOnItemClickListener(new AdapterView.OnItemClickListener() {
-                    @Override
-                    public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                        String ingredient = (String) parent.getItemAtPosition(position);
-                        view.setBackgroundColor(getResources().getColor(R.color.colorAccent));
-                        ShoppingFragment.ingredients.add(ingredient);
-                    }
-                });
+                ListView list_ingredients = (ListView) view.findViewById(R.id.recipe_ingredients);
+                list_ingredients.setAdapter(new ArrayAdapter<>(getActivity().getApplicationContext(), android.R.layout.simple_list_item_1, ingredients));
 
             /* Building the picture of the recipe */
-                ImageView img = (ImageView) findViewById(R.id.recipe_picture);
+                ImageView img = (ImageView) view.findViewById(R.id.recipe_picture);
 
                 // Pick the picture with the id of the recipe
                 img.setImageBitmap(image);
 
             /* Remove the progress bar */
-                findViewById(R.id.progress_bar).setVisibility(View.GONE);
+                view.findViewById(R.id.progress_bar).setVisibility(View.GONE);
 
             } catch (JSONException e) {
                 e.printStackTrace();

@@ -20,7 +20,7 @@ import be.vives.loic.shopandcook.R;
 
 public class RecipeListAdapter extends ArrayAdapter<Recipe> {
     private List<Recipe> recipes;
-    int resource;
+    private int resource;
     String response;
     Context context;
 

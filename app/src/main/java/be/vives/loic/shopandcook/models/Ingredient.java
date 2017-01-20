@@ -1,7 +1,6 @@
 package be.vives.loic.shopandcook.models;
 
 import java.io.Serializable;
-import java.io.StringReader;
 
 /**
  * all kind of categories
@@ -21,7 +20,6 @@ enum CategoryIngredient{
  * Created by LOIC on 21/11/2016.
  */
 public class Ingredient implements Serializable{
-    private int id;
 
     // describe the ingredient
     private String name;
@@ -36,17 +34,12 @@ public class Ingredient implements Serializable{
      * @param name
      */
     public Ingredient(int id, CategoryIngredient category, String name) {
-        this.id = id;
         this.category = category;
         this.name = name;
     }
 
-    public int getId() {
-        return id;
-    }
+    public Ingredient(String name) {
 
-    public void setId(int id) {
-        this.id = id;
     }
 
     public String getName() {
@@ -63,12 +56,5 @@ public class Ingredient implements Serializable{
 
     public void setCategory(CategoryIngredient category) {
         this.category = category;
-    }
-
-    @Override
-    public String toString() {
-        return  "\n("+ id + ") " +
-                category.name().toUpperCase() + " " +
-                name;
     }
 }
