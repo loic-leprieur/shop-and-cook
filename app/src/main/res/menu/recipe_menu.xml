@@ -5,16 +5,21 @@
         android:id="@+id/action_back"
         android:icon="@drawable/ic_arrow"
         android:title="Back"
-        android:showAsAction="always"
+        android:showAsAction="ifRoom"
         tools:ignore="AppCompatResource" />
+    <item
+        android:id="@+id/action_add_to_planning"
+        android:title="Add to planning"
+        android:icon="@drawable/ic_access_time"
+        android:showAsAction="ifRoom" />
     <item
         android:id="@+id/action_home"
         android:title="Home"
         android:icon="@drawable/ic_home"
-        android:showAsAction="always" />
+        android:showAsAction="ifRoom" />
     <item
         android:id="@+id/action_signout"
         android:title="Sign out"
         android:icon="@drawable/ic_person"
-        android:showAsAction="always" />
+        android:showAsAction="ifRoom" />
 </menu>
