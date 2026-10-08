@@ -1,56 +1,58 @@
 apply plugin: 'com.android.application'
 
 android {
+    namespace 'be.vives.loic.shopandcook'
 
-    compileSdkVersion 23
-    buildToolsVersion "23.0.3"
+    compileSdk 36
     defaultConfig {
         applicationId "be.vives.loic.shopandcook"
         minSdkVersion 23
-        targetSdkVersion 23
+        targetSdkVersion 36
         versionCode 1
         versionName "1.0"
-        testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
+        testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
     }
 
     buildTypes {
         release {
             minifyEnabled false
-            proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
+            proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
         }
     }
-    dexOptions {
-    }
     compileOptions {
-        sourceCompatibility JavaVersion.VERSION_1_7
-        targetCompatibility JavaVersion.VERSION_1_7
+        sourceCompatibility JavaVersion.VERSION_17
+        targetCompatibility JavaVersion.VERSION_17
     }
 }
 
 
 dependencies {
-    compile fileTree(include: ['*.jar'], dir: 'libs')
-    androidTestCompile('com.android.support.test.espresso:espresso-core:2.2.2', {
+    androidTestImplementation('androidx.test.espresso:espresso-core:3.6.1', {
         exclude group: 'com.android.support', module: 'support-annotations'
     })
-    compile 'com.android.support:recyclerview-v7:23.4.0'
-    compile 'com.android.support:cardview-v7:23.4.0'
-    compile 'com.squareup.picasso:picasso:2.5.2'
+    androidTestImplementation 'androidx.test:runner:1.6.2'
+    androidTestImplementation 'androidx.test.ext:junit:1.2.1'
+    implementation 'androidx.recyclerview:recyclerview:1.3.2'
+    implementation 'androidx.cardview:cardview:1.0.0'
+    implementation 'androidx.swiperefreshlayout:swiperefreshlayout:1.1.0'
+    implementation 'com.squareup.picasso:picasso:2.71828'
     // Google
-    compile 'com.android.support:appcompat-v7:23.4.0'
-    compile 'com.google.android.gms:play-services-auth:10.0.1'
+    implementation 'androidx.appcompat:appcompat:1.7.0'
+    implementation 'com.google.android.gms:play-services-auth:20.7.0'
     // Firebase
-    compile 'com.google.firebase:firebase-database:10.0.1'
-    compile 'com.google.firebase:firebase-core:10.0.1'
-    compile 'com.google.firebase:firebase-auth:10.0.1'
-    // Firebase UI
-    compile 'com.firebaseui:firebase-ui-database:0.4.0'
-    compile 'com.loopj.android:android-async-http:1.4.9'
-    compile 'com.android.support:gridlayout-v7:23.1.0'
-    compile 'com.android.support:design:23.4.0'
+    implementation platform('com.google.firebase:firebase-bom:34.15.0')
+    implementation 'com.google.firebase:firebase-auth'
+    implementation 'androidx.gridlayout:gridlayout:1.0.0'
+    implementation 'com.google.android.material:material:1.12.0'
+    // HTTP client used by the Recipe API calls (package cz.msebera.android.httpclient) -
+    // was never actually declared in the original build.gradle; the project only
+    // compiled because it was previously loaded from an uncommitted local libs/*.jar
+    implementation 'cz.msebera.android:httpclient:4.5.8'
     // test
-    testCompile 'junit:junit:4.12'
-    compile 'com.google.android.gms:play-services-maps:10.0.1'
+    testImplementation 'junit:junit:4.13.2'
+    // Free, no API key required (OpenStreetMap tiles)
+    implementation 'org.osmdroid:osmdroid-android:6.1.20'
+    implementation 'com.google.android.gms:play-services-location:21.3.0'
 }
 
 

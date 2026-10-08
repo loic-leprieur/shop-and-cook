@@ -2,7 +2,8 @@ package be.vives.loic.shopandcook.activities;
 
 import android.content.Intent;
 import android.os.Bundle;
-import android.support.v7.app.AppCompatActivity;
+import androidx.appcompat.app.AppCompatActivity;
+import androidx.appcompat.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.widget.Button;
@@ -17,9 +18,17 @@ public class HomeActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_home);
+        EdgeToEdge.apply(this);
+
+        Toolbar toolbar = findViewById(R.id.toolbar);
+        setSupportActionBar(toolbar);
+        getSupportActionBar().setTitle(R.string.app_name);
+
+        findViewById(R.id.homeFab).setOnClickListener(v ->
+                startActivity(new Intent(getApplicationContext(), HomeActivity.class)));
 
         if (savedInstanceState == null) {
-            getFragmentManager().beginTransaction()
+            getSupportFragmentManager().beginTransaction()
                     .add(R.id.homeContainer, new HomeFragment())
                     .commit();
         }
@@ -34,13 +43,11 @@ public class HomeActivity extends AppCompatActivity {
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         Intent i = null;
-        switch (item.getItemId()) {
-            case R.id.action_signout:
-                i = new Intent(getApplicationContext(), SignInActivity.class);
-                break;
-            case R.id.action_home:
-                i = new Intent(getApplicationContext(), HomeActivity.class);
-                break;
+        int id = item.getItemId();
+        if (id == R.id.action_signout) {
+            i = new Intent(getApplicationContext(), be.vives.loic.shopandcook.activities.SignInActivity.class);
+        } else if (id == R.id.action_home) {
+            i = new Intent(getApplicationContext(), HomeActivity.class);
         }
 
         startActivity(i);

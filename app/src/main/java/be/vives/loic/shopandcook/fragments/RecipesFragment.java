@@ -1,29 +1,36 @@
 package be.vives.loic.shopandcook.fragments;
 
-import android.app.Fragment;
 import android.os.Bundle;
-import android.support.annotation.Nullable;
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
+import androidx.appcompat.widget.Toolbar;
+import androidx.fragment.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
 import be.vives.loic.shopandcook.R;
-
-/**
- * Created by LOIC on 12/01/2017.
- */
+import be.vives.loic.shopandcook.activities.RecipesActivity;
 
 public class RecipesFragment extends Fragment {
-    View view;
-
     @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
-        view = inflater.inflate(R.layout.fragment_recipes, container, false);
+        View view = inflater.inflate(R.layout.fragment_recipes, container, false);
 
-        android.support.v7.widget.Toolbar toolbar = (android.support.v7.widget.Toolbar) view.findViewById(R.id.toolbar_recipes);
+        Toolbar toolbar = view.findViewById(R.id.toolbar_recipes);
         toolbar.setLogo(R.drawable.ic_search);
 
         return view;
+    }
+
+    @Override
+    public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
+        super.onViewCreated(view, savedInstanceState);
+        // Only RecipesActivity can access swipeContainer/inputSearch, since they live in this
+        // fragment's inflated view, not the activity's.
+        if (getActivity() instanceof RecipesActivity) {
+            ((RecipesActivity) getActivity()).onRecipesViewReady(view);
+        }
     }
 }

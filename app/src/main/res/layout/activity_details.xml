@@ -1,35 +1,71 @@
 <?xml version="1.0" encoding="utf-8"?>
-<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:background="@color/cardview_dark_background"
-    android:orientation="vertical"
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="match_parent">
 
-    <ProgressBar
-        android:id="@+id/progress_bar"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_centerInParent="true" />
-
-    <ImageView
-        android:id="@+id/recipe_picture"
-        android:layout_width="fill_parent"
-        android:adjustViewBounds="false"
-        android:layout_alignParentStart="true"
-        android:layout_height="200dp" />
-
-    <ListView
-        android:id="@+id/recipe_ingredients"
-        android:layout_below="@id/recipe_picture"
+    <LinearLayout
+        android:orientation="vertical"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"></ListView>
+        android:layout_height="match_parent">
 
-    <android.support.design.widget.FloatingActionButton
-        android:id="@+id/addTofavoriteBtn"
-        android:layout_width="100dp"
-        android:layout_height="100dp"
-        android:src="@drawable/ic_favorite_border"
-        android:layout_marginEnd="34dp"
-        android:layout_above="@+id/recipe_ingredients"
-        android:layout_alignParentEnd="true" />
-</RelativeLayout>
+        <androidx.appcompat.widget.Toolbar
+            android:id="@+id/toolbar"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:minHeight="?attr/actionBarSize"
+            android:background="?attr/colorPrimary"
+            android:elevation="4dp"
+            android:theme="@style/AppTheme.AppBarOverlay"
+            app:popupTheme="@style/AppTheme.PopupOverlay" />
+
+    <RelativeLayout
+        android:background="@color/cardview_dark_background"
+        android:orientation="vertical"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="1">
+
+        <ProgressBar
+            android:id="@+id/progress_bar"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerInParent="true" />
+
+        <ImageView
+            android:id="@+id/recipe_picture"
+            android:layout_width="fill_parent"
+            android:adjustViewBounds="false"
+            android:layout_alignParentStart="true"
+            android:layout_height="200dp" />
+
+        <ListView
+            android:id="@+id/recipe_ingredients"
+            android:layout_below="@id/recipe_picture"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"></ListView>
+
+        <com.google.android.material.floatingactionbutton.FloatingActionButton
+            android:id="@+id/addTofavoriteBtn"
+            android:layout_width="100dp"
+            android:layout_height="100dp"
+            android:src="@drawable/ic_favorite_border"
+            android:layout_marginEnd="34dp"
+            android:layout_above="@+id/recipe_ingredients"
+            android:layout_alignParentEnd="true" />
+
+        <com.google.android.material.floatingactionbutton.FloatingActionButton
+            android:id="@+id/addToPlanningBtn"
+            android:layout_width="70dp"
+            android:layout_height="70dp"
+            android:src="@drawable/ic_access_time"
+            app:backgroundTint="@android:color/holo_purple"
+            android:layout_marginEnd="49dp"
+            android:layout_marginBottom="12dp"
+            android:layout_above="@+id/addTofavoriteBtn"
+            android:layout_alignParentEnd="true" />
+    </RelativeLayout>
+    </LinearLayout>
+
+    <include layout="@layout/fab_home" />
+</FrameLayout>

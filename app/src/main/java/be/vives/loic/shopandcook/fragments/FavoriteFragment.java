@@ -1,60 +1,50 @@
 package be.vives.loic.shopandcook.fragments;
 
-import android.app.Fragment;
 import android.content.Intent;
 import android.os.Bundle;
-import android.support.annotation.Nullable;
+import androidx.annotation.Nullable;
+import androidx.fragment.app.Fragment;
+import androidx.recyclerview.widget.ItemTouchHelper;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.AdapterView;
-import android.widget.ArrayAdapter;
-import android.widget.ListView;
 
-import java.util.ArrayList;
+import java.util.List;
 
 import be.vives.loic.shopandcook.R;
 import be.vives.loic.shopandcook.activities.RecipeDetailActivity;
+import be.vives.loic.shopandcook.models.FavoritesAdapter;
 import be.vives.loic.shopandcook.models.Recipe;
+import be.vives.loic.shopandcook.models.SwipeToDeleteCallback;
+import be.vives.loic.shopandcook.storage.FavoritesDao;
 
-/**
- * Created by LOIC on 20/01/2017.
- */
-
-public class FavoriteFragment extends Fragment implements AdapterView.OnItemClickListener {
-    View view;
-    public static ArrayList<Recipe> favorites = new ArrayList<>();
-    public ArrayList<String> favoritesStr = new ArrayList<>();
-
+public class FavoriteFragment extends Fragment {
     @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-        view = inflater.inflate(R.layout.fragment_favorite, container, false);
+        View view = inflater.inflate(R.layout.fragment_favorite, container, false);
 
-        for (Recipe r : favorites) {
-            favoritesStr.add(r.getTitle());
-        }
+        FavoritesDao favoritesDao = new FavoritesDao(requireContext());
+        List<Recipe> favorites = favoritesDao.getAll();
 
-        ListView list_ingredients = (ListView) view.findViewById(R.id.recipe_favorites);
-        list_ingredients.setAdapter(new ArrayAdapter<String>(getActivity().getApplicationContext(), android.R.layout.simple_list_item_1, favoritesStr));
-        list_ingredients.setOnItemClickListener(this);
+        FavoritesAdapter adapter = new FavoritesAdapter(favorites, recipe -> {
+            Intent i = new Intent(requireActivity().getApplicationContext(), RecipeDetailActivity.class);
+            i.putExtra("recipe_id", recipe.getId());
+            i.putExtra("recipe_title", recipe.getTitle());
+            startActivity(i);
+        });
+
+        RecyclerView recyclerView = view.findViewById(R.id.recipe_favorites);
+        recyclerView.setLayoutManager(new LinearLayoutManager(requireContext()));
+        recyclerView.setAdapter(adapter);
+
+        new ItemTouchHelper(new SwipeToDeleteCallback(requireContext(), position -> {
+            Recipe removed = adapter.removeAt(position);
+            favoritesDao.remove(removed.getId());
+        })).attachToRecyclerView(recyclerView);
 
         return view;
-    }
-
-    @Override
-    public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-        String recipeStr = (String) parent.getItemAtPosition(position);
-        String recipeId = "";
-        Intent i = new Intent(getActivity().getApplicationContext(), RecipeDetailActivity.class);
-
-        for (Recipe r : favorites) {
-            if (r.getTitle().contains(recipeStr)) {
-                recipeId = r.getId();
-            }
-        }
-        i.putExtra("recipe_id", recipeId);
-        i.putExtra("recipe_title", recipeStr);
-        startActivity(i);
     }
 }

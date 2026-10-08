@@ -1,14 +1,16 @@
 package be.vives.loic.shopandcook.activities;
 
-import android.app.ProgressDialog;
 import android.content.Intent;
 import android.graphics.BitmapFactory;
 import android.net.ConnectivityManager;
-import android.net.NetworkInfo;
-import android.os.AsyncTask;
+import android.net.NetworkCapabilities;
+import android.net.Uri;
 import android.os.Bundle;
-import android.os.StrictMode;
-import android.support.v7.app.AppCompatActivity;
+import android.os.Handler;
+import android.os.Looper;
+import androidx.appcompat.app.AppCompatActivity;
+import androidx.appcompat.widget.Toolbar;
+import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 import android.text.Editable;
 import android.text.TextWatcher;
 import android.util.Log;
@@ -28,58 +30,96 @@ import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
+import java.net.HttpURLConnection;
 import java.net.URL;
 import java.util.ArrayList;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
 
 import be.vives.loic.shopandcook.R;
 import be.vives.loic.shopandcook.fragments.RecipesFragment;
 import be.vives.loic.shopandcook.models.Recipe;
 import be.vives.loic.shopandcook.models.RecipeListAdapter;
-import cz.msebera.android.httpclient.HttpResponse;
-import cz.msebera.android.httpclient.client.HttpClient;
-import cz.msebera.android.httpclient.client.methods.HttpGet;
-import cz.msebera.android.httpclient.impl.client.DefaultHttpClient;
 
-/**
- * @TODO : Search a recipe by name
- */
 public class RecipesActivity extends AppCompatActivity implements AdapterView.OnItemClickListener {
-    // Authentification string used in API requests
-    private final static String API_KEY = "d73bc57bb507293fcd95b6c383ce59ca";
+    private static final String TAG = "RecipesActivity";
 
-    // array of models used and its adapter in the listview
-    private ArrayList<Recipe> mRecipes = new ArrayList<Recipe>();
-    private RecipeListAdapter adapter;
+    // TheMealDB test API key - see https://www.themealdb.com/api.php
+    private final static String API_KEY = "1";
+
+    private static final long SEARCH_DEBOUNCE_MS = 400;
+
+    private final ExecutorService executorService = Executors.newSingleThreadExecutor();
+    private final Handler searchHandler = new Handler(Looper.getMainLooper());
+
+    // In-memory cache of the default browse listing, shared across activity instances so
+    // navigating back to this screen doesn't refetch it; only pull-to-refresh forces a reload.
+    private static ArrayList<Recipe> cachedRecipes;
+
+    private EditText inputSearch;
+    private SwipeRefreshLayout swipeContainer;
 
     public Recipe selectedRecipe;
-
-    // GUI components
-    ListView listView;
-    EditText inputSearch;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_recipes);
+        EdgeToEdge.apply(this);
+
+        Toolbar toolbar = findViewById(R.id.toolbar);
+        setSupportActionBar(toolbar);
+        getSupportActionBar().setTitle(R.string.app_name);
+
+        findViewById(R.id.homeFab).setOnClickListener(v ->
+                startActivity(new Intent(getApplicationContext(), HomeActivity.class)));
 
         if (savedInstanceState == null) {
-            getFragmentManager().beginTransaction()
+            getSupportFragmentManager().beginTransaction()
                     .add(R.id.recipesContainer, new RecipesFragment())
                     .commit();
-            if (isOnline()) {
-                LoadRecipes task = new LoadRecipes();
-                task.execute("http://food2fork.com/api/search?key=" + API_KEY);
-            } else {
-                Toast.makeText(this, "Please connect to retrieve recipes", Toast.LENGTH_SHORT).show();
+        }
+    }
+
+    // Called by RecipesFragment once its view is created, since swipeContainer/inputSearch
+    // live inside that fragment's layout rather than the activity's own.
+    public void onRecipesViewReady(View fragmentView) {
+        swipeContainer = fragmentView.findViewById(R.id.swipeContainer);
+        swipeContainer.setOnRefreshListener(this::refresh);
+
+        inputSearch = fragmentView.findViewById(R.id.inputSearch);
+        inputSearch.addTextChangedListener(new TextWatcher() {
+            @Override
+            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+
             }
+
+            @Override
+            public void onTextChanged(CharSequence s, int start, int before, int count) {
+                String query = s.toString().trim();
+                searchHandler.removeCallbacksAndMessages(null);
+                searchHandler.postDelayed(() -> search(query), SEARCH_DEBOUNCE_MS);
+            }
+
+            @Override
+            public void afterTextChanged(Editable s) {
+
+            }
+        });
+
+        if (isOnline()) {
+            loadInitialRecipes();
+        } else {
+            Toast.makeText(this, "Please connect to retrieve recipes", Toast.LENGTH_SHORT).show();
         }
     }
 
     public boolean isOnline() {
-        ConnectivityManager connectivityManager = (ConnectivityManager)
-                getSystemService(CONNECTIVITY_SERVICE);
-        NetworkInfo networkInfo = connectivityManager.getActiveNetworkInfo();
-        return (networkInfo != null && networkInfo.isConnected());
+        ConnectivityManager connectivityManager =
+                (ConnectivityManager) getSystemService(CONNECTIVITY_SERVICE);
+        NetworkCapabilities capabilities =
+                connectivityManager.getNetworkCapabilities(connectivityManager.getActiveNetwork());
+        return capabilities != null && capabilities.hasCapability(NetworkCapabilities.NET_CAPABILITY_INTERNET);
     }
 
     @Override
@@ -91,13 +131,11 @@ public class RecipesActivity extends AppCompatActivity implements AdapterView.On
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         Intent i = null;
-        switch (item.getItemId()) {
-            case R.id.action_signout:
-                i = new Intent(getApplicationContext(), SignInActivity.class);
-                break;
-            case R.id.action_home:
-                i = new Intent(getApplicationContext(), HomeActivity.class);
-                break;
+        int id = item.getItemId();
+        if (id == R.id.action_signout) {
+            i = new Intent(getApplicationContext(), be.vives.loic.shopandcook.activities.SignInActivity.class);
+        } else if (id == R.id.action_home) {
+            i = new Intent(getApplicationContext(), HomeActivity.class);
         }
         startActivity(i);
         return super.onOptionsItemSelected(item);
@@ -108,141 +146,128 @@ public class RecipesActivity extends AppCompatActivity implements AdapterView.On
         selectedRecipe = (Recipe) parent.getItemAtPosition(position);
 
         Recipe r = (Recipe) parent.getItemAtPosition(position);
-        Intent detailIntent = new Intent(getApplicationContext(), RecipeDetailActivity.class);
+        Intent detailIntent = new Intent(getApplicationContext(), be.vives.loic.shopandcook.activities.RecipeDetailActivity.class);
         detailIntent.putExtra("recipe_id", r.getId());
         detailIntent.putExtra("recipe_title", r.getTitle());
 
         startActivity(detailIntent);
     }
 
-
-    private class LoadRecipes extends AsyncTask<String, Void, String> {
-
-        private ProgressDialog dialog = new ProgressDialog(RecipesActivity.this);
-
-        @Override
-        protected void onPreExecute() {
-            this.dialog.setMessage("Please wait : fetching recipes");
-            this.dialog.show();
+    // Loads the default browse listing once per app session; later visits to this screen
+    // reuse the cache instead of hitting the network again.
+    private void loadInitialRecipes() {
+        if (cachedRecipes != null) {
+            showRecipes(cachedRecipes);
+            return;
         }
 
-        @Override
-        protected void onProgressUpdate(Void... values) {
-            super.onProgressUpdate(values);
+        swipeContainer.setRefreshing(true);
+        fetchRecipes(buildUrl(""), "", () -> swipeContainer.setRefreshing(false));
+    }
+
+    // Searches recipes by name; an empty query reuses the cached browse listing if available.
+    private void search(String query) {
+        if (query.isEmpty() && cachedRecipes != null) {
+            showRecipes(cachedRecipes);
+            return;
         }
+        fetchRecipes(buildUrl(query), query, null);
+    }
 
-        @Override
-        protected String doInBackground(String... params) {
-            return GET(params[0]);
-        }
+    // Pull-to-refresh: always hits the network, refreshing the cache when browsing (empty query).
+    private void refresh() {
+        String query = inputSearch != null ? inputSearch.getText().toString().trim() : "";
+        fetchRecipes(buildUrl(query), query, () -> {
+            if (swipeContainer != null) {
+                swipeContainer.setRefreshing(false);
+            }
+        });
+    }
 
-        @Override
-        protected void onPostExecute(final String result) {
-            StrictMode.ThreadPolicy policy = new StrictMode.ThreadPolicy.Builder().permitAll().build();
-            StrictMode.setThreadPolicy(policy);
+    private String buildUrl(String query) {
+        return query.isEmpty()
+                ? "https://www.themealdb.com/api/json/v1/" + API_KEY + "/search.php?f=a"
+                : "https://www.themealdb.com/api/json/v1/" + API_KEY + "/search.php?s=" + Uri.encode(query);
+    }
 
-            // Consume the Json response
-            try {
-                JSONObject jsonRaw = new JSONObject(result);
-                JSONArray jsonRecipesArray = jsonRaw.getJSONArray("recipes");
-                JSONObject jsonRecipe;
-                String id = "0";
-                String title = "NOT FOUND";
-                String url = "NOT FOUND";
-                Recipe recipe;
-                mRecipes = new ArrayList<Recipe>();
-
-                for (int i = 1; i < 30; i++) {
-                    jsonRecipe = (JSONObject) jsonRecipesArray.get(i);
-
-                    if (jsonRecipe.has("recipe_id")) {
-                        id = jsonRecipe.getString("recipe_id");
-                        title = jsonRecipe.getString("title");
-                        url = jsonRecipe.getString("image_url");
-                    }
-                    recipe = new Recipe(id, title, null, null);
-                    URL imageURL = new URL(url);
-                    recipe.setImage(BitmapFactory.decodeStream(imageURL.openConnection().getInputStream()));
-                    mRecipes.add(recipe);
+    private void fetchRecipes(String url, String query, Runnable onDone) {
+        executorService.execute(() -> {
+            String response = GET(url);
+            ArrayList<Recipe> recipes = parseRecipes(response);
+            if (query.isEmpty()) {
+                cachedRecipes = recipes;
+            }
+            runOnUiThread(() -> {
+                showRecipes(recipes);
+                if (onDone != null) {
+                    onDone.run();
                 }
+            });
+        });
+    }
 
-                // create the view with the data collected
-                listView = (ListView) findViewById(R.id.listRecipes);
-                adapter = new RecipeListAdapter(getApplicationContext(), R.layout.recipe_row, mRecipes);
-                listView.setAdapter(adapter);
-
-                listView.setOnItemClickListener(RecipesActivity.this);
-
-                inputSearch = (EditText) findViewById(R.id.inputSearch);
-                inputSearch.addTextChangedListener(new TextWatcher() {
-                    @Override
-                    public void beforeTextChanged(CharSequence s, int start, int count, int after) {
-
-                    }
-
-                    @Override
-                    public void onTextChanged(CharSequence s, int start, int before, int count) {
-
-                    }
-
-                    @Override
-                    public void afterTextChanged(Editable s) {
-
-                    }
-                });
-
-                Toast.makeText(getApplicationContext(), jsonRaw.getInt("count") + " recipes found", Toast.LENGTH_LONG).show();
-
-            } catch (JSONException | IOException e) {
-                e.printStackTrace();
+    // Consume the JSON response. Runs off the main thread since it downloads each recipe's image.
+    private ArrayList<Recipe> parseRecipes(String response) {
+        ArrayList<Recipe> recipes = new ArrayList<>();
+        try {
+            JSONObject jsonRaw = new JSONObject(response);
+            JSONArray jsonMeals = jsonRaw.optJSONArray("meals");
+            if (jsonMeals == null) {
+                return recipes;
             }
 
-            // remove the loading message
-            if (dialog.isShowing()) {
-                dialog.dismiss();
+            for (int i = 0; i < jsonMeals.length(); i++) {
+                JSONObject jsonMeal = jsonMeals.getJSONObject(i);
+                Recipe recipe = new Recipe(jsonMeal.getString("idMeal"), jsonMeal.getString("strMeal"), null, null);
+                String thumbUrl = jsonMeal.getString("strMealThumb");
+                recipe.setImageUrl(thumbUrl);
+                URL imageURL = new URL(thumbUrl);
+                recipe.setImage(BitmapFactory.decodeStream(imageURL.openConnection().getInputStream()));
+                recipes.add(recipe);
             }
+        } catch (JSONException | IOException e) {
+            Log.e(TAG, "Failed to parse recipes response", e);
         }
+        return recipes;
+    }
+
+    private void showRecipes(ArrayList<Recipe> recipes) {
+        // create the view with the data collected
+        ListView listView = findViewById(R.id.listRecipes);
+        RecipeListAdapter adapter = new RecipeListAdapter(getApplicationContext(), R.layout.recipe_row, recipes);
+        listView.setAdapter(adapter);
+        listView.setOnItemClickListener(this);
+
+        Toast.makeText(getApplicationContext(), recipes.size() + " recipes found", Toast.LENGTH_LONG).show();
     }
 
     public static String GET(String url) {
-        InputStream inputStream = null;
-        String result = "";
+        HttpURLConnection connection = null;
         try {
+            connection = (HttpURLConnection) new URL(url).openConnection();
+            connection.setRequestMethod("GET");
 
-            // create HttpClient
-            HttpClient httpclient = new DefaultHttpClient();
-
-            // make GET request to the given URL
-            HttpResponse httpResponse = httpclient.execute(new HttpGet(url));
-
-            // receive response as inputStream
-            inputStream = httpResponse.getEntity().getContent();
-
-            // convert inputstream to string
-            if (inputStream != null)
-                result = convertInputStreamToString(inputStream);
-            else
-                result = "No data!";
-
-        } catch (Exception e) {
-            Log.d("InputStream", e.getLocalizedMessage());
+            try (InputStream inputStream = connection.getInputStream()) {
+                return convertInputStreamToString(inputStream);
+            }
+        } catch (IOException e) {
+            Log.e(TAG, "Failed to fetch recipes from " + url, e);
+            return "No data!";
+        } finally {
+            if (connection != null) {
+                connection.disconnect();
+            }
         }
-
-        return result;
     }
 
     private static String convertInputStreamToString(InputStream inputStream) throws IOException {
-        BufferedReader bufferedReader = new BufferedReader(new InputStreamReader(inputStream));
-        String line = "";
-        String result = "";
-        while ((line = bufferedReader.readLine()) != null)
-            result += line;
-
-        try {
-            inputStream.close();
-        } catch (IOException e) {
-            e.printStackTrace();
+        StringBuilder result = new StringBuilder();
+        try (BufferedReader bufferedReader = new BufferedReader(new InputStreamReader(inputStream))) {
+            String line;
+            while ((line = bufferedReader.readLine()) != null) {
+                result.append(line);
+            }
         }
-        return result;
+        return result.toString();
     }
 }
