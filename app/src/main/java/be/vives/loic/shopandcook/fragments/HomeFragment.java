@@ -1,10 +1,10 @@
 package be.vives.loic.shopandcook.fragments;
 
-import android.app.Fragment;
-import android.app.FragmentTransaction;
 import android.content.Intent;
 import android.os.Bundle;
-import android.support.annotation.Nullable;
+import androidx.annotation.Nullable;
+import androidx.fragment.app.Fragment;
+import androidx.fragment.app.FragmentTransaction;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -41,28 +41,23 @@ public class HomeFragment extends Fragment implements View.OnClickListener {
 
     @Override
     public void onClick(View v) {
-        FragmentTransaction ft = getFragmentManager().beginTransaction();
-        switch (v.getId()) {
-            case R.id.RecipesButton:
-                Intent i = new Intent(getActivity().getApplicationContext(), RecipesActivity.class);
-                startActivity(i);
-                break;
-            case R.id.FavoriteButton:
-                FavoriteFragment ff = new FavoriteFragment();
-                ft.replace(R.id.homeContainer, ff).commit();
-                break;
-            case R.id.MapButton:
-                MapFragment mf = new MapFragment();
-                ft.replace(R.id.homeContainer, mf).commit();
-                break;
-            case R.id.ShoppingListButton:
-                ShoppingFragment sf = new ShoppingFragment();
-                ft.replace(R.id.homeContainer, sf).commit();
-                break;
-            case R.id.CalendarButton:
-                CalendarFragment cf = new CalendarFragment();
-                ft.replace(R.id.homeContainer, cf).commit();
-                break;
+        FragmentTransaction ft = getParentFragmentManager().beginTransaction();
+        int id = v.getId();
+        if (id == R.id.RecipesButton) {
+            Intent i = new Intent(getActivity().getApplicationContext(), RecipesActivity.class);
+            startActivity(i);
+        } else if (id == R.id.FavoriteButton) {
+            FavoriteFragment ff = new FavoriteFragment();
+            ft.replace(R.id.homeContainer, ff).commit();
+        } else if (id == R.id.MapButton) {
+            MapFragment mf = new MapFragment();
+            ft.replace(R.id.homeContainer, mf).commit();
+        } else if (id == R.id.ShoppingListButton) {
+            ShoppingFragment sf = new ShoppingFragment();
+            ft.replace(R.id.homeContainer, sf).commit();
+        } else if (id == R.id.CalendarButton) {
+            CalendarFragment cf = new CalendarFragment();
+            ft.replace(R.id.homeContainer, cf).commit();
         }
     }
 }
