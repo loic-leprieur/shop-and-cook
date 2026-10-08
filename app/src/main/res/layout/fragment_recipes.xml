@@ -4,10 +4,10 @@
     android:id="@+id/activity_main2"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@color/cardview_dark_background"
+    android:background="@android:color/holo_orange_light"
     tools:context="be.vives.loic.shopandcook.activities.RecipesActivity">
 
-    <android.support.v7.widget.Toolbar
+    <androidx.appcompat.widget.Toolbar
         android:id="@+id/toolbar_recipes"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
@@ -25,20 +25,18 @@
             android:id="@+id/inputSearch"
             android:layout_width="match_parent"
             android:layout_height="match_parent" />
-    </android.support.v7.widget.Toolbar>
+    </androidx.appcompat.widget.Toolbar>
 
-    <android.support.v4.widget.SwipeRefreshLayout
+    <androidx.swiperefreshlayout.widget.SwipeRefreshLayout
         android:id="@+id/swipeContainer"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
+        android:layout_height="match_parent"
         android:layout_below="@id/toolbar_recipes">
 
         <ListView
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_alignParentStart="true"
-            android:id="@+id/listRecipes"
-            android:layout_below="@+id/swipeContainer" />
+            android:layout_height="match_parent"
+            android:id="@+id/listRecipes" />
 
-    </android.support.v4.widget.SwipeRefreshLayout>
+    </androidx.swiperefreshlayout.widget.SwipeRefreshLayout>
 </RelativeLayout>

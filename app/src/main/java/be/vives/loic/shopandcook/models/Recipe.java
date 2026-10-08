@@ -17,6 +17,9 @@ public class Recipe implements Serializable{
 
     private Bitmap image;
 
+    // remote thumbnail URL, kept around so favorites can be persisted without storing the bitmap
+    private String imageUrl;
+
     // describe the recipe
     private String title;
 
@@ -66,5 +69,13 @@ public class Recipe implements Serializable{
 
     public void setImage(Bitmap image) {
         this.image = image;
+    }
+
+    public String getImageUrl() {
+        return imageUrl;
+    }
+
+    public void setImageUrl(String imageUrl) {
+        this.imageUrl = imageUrl;
     }
 }
