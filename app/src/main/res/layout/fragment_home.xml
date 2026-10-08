@@ -34,6 +34,11 @@
                 android:background="@android:color/holo_orange_light"
                 android:alpha="0.7" />
 
+                <View
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:background="#80000000" />
+
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
@@ -82,6 +87,11 @@
                 android:layout_height="match_parent"
                 android:background="@android:color/holo_purple"
                 android:alpha="0.7" />
+
+                <View
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:background="#80000000" />
 
             <LinearLayout
                 android:layout_width="match_parent"
@@ -139,6 +149,11 @@
                 android:background="@android:color/holo_blue_bright"
                 android:alpha="0.7" />
 
+                <View
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:background="#80000000" />
+
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
@@ -187,6 +202,11 @@
                 android:layout_height="match_parent"
                 android:background="@android:color/holo_green_light"
                 android:alpha="0.7" />
+
+                <View
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:background="#80000000" />
 
             <LinearLayout
                 android:layout_width="match_parent"
@@ -243,6 +263,11 @@
                 android:layout_height="match_parent"
                 android:background="@android:color/holo_red_light"
                 android:alpha="0.7" />
+
+                <View
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:background="#80000000" />
 
             <LinearLayout
                 android:layout_width="match_parent"

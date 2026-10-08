@@ -1,6 +1,16 @@
 package be.vives.loic.shopandcook.activities;
 
+import android.Manifest;
 import android.app.DatePickerDialog;
+import android.app.TimePickerDialog;
+import android.content.ActivityNotFoundException;
+import android.content.pm.PackageManager;
+import android.os.Build;
+import android.provider.CalendarContract;
+import androidx.activity.result.ActivityResultLauncher;
+import androidx.activity.result.contract.ActivityResultContracts;
+import androidx.appcompat.app.AlertDialog;
+import com.google.firebase.auth.FirebaseAuth;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
@@ -38,6 +48,7 @@ import java.util.Locale;
 
 import be.vives.loic.shopandcook.R;
 import be.vives.loic.shopandcook.models.Recipe;
+import be.vives.loic.shopandcook.models.RecipeSteps;
 import be.vives.loic.shopandcook.storage.FavoritesDao;
 import be.vives.loic.shopandcook.storage.PlannerDao;
 import be.vives.loic.shopandcook.storage.ShoppingListDao;
@@ -60,6 +71,12 @@ public class RecipeDetailActivity extends AppCompatActivity {
     private FavoritesDao favoritesDao;
     private ShoppingListDao shoppingListDao;
     private PlannerDao plannerDao;
+
+    private ArrayList<String> steps = new ArrayList<>();
+    private String shareLink;
+
+    private final ActivityResultLauncher<String> notificationPermission =
+            registerForActivityResult(new ActivityResultContracts.RequestPermission(), granted -> { });
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -96,6 +113,9 @@ public class RecipeDetailActivity extends AppCompatActivity {
         findViewById(R.id.addTofavoriteBtn).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                if (!requireSignIn()) {
+                    return;
+                }
                 if (!isFavorite) {
                     fab.setImageResource(R.drawable.ic_favorite);
                     isFavorite = !isFavorite;
@@ -143,28 +163,106 @@ public class RecipeDetailActivity extends AppCompatActivity {
             this.finish();
         } else if (id == R.id.action_add_to_planning) {
             showDatePicker();
+        } else if (id == R.id.action_share) {
+            shareRecipe();
+        } else if (id == R.id.action_cook) {
+            startCookingMode();
         }
         if (i != null)
             startActivity(i);
         return super.onOptionsItemSelected(item);
     }
 
+    // README 2.1: guests can browse but not bookmark or plan.
+    private boolean requireSignIn() {
+        if (FirebaseAuth.getInstance().getCurrentUser() != null) {
+            return true;
+        }
+        Toast.makeText(this, R.string.sign_in_required, Toast.LENGTH_SHORT).show();
+        return false;
+    }
+
     private void showDatePicker() {
+        if (!requireSignIn()) {
+            return;
+        }
+        if (Build.VERSION.SDK_INT >= 33 && ContextCompat.checkSelfPermission(this,
+                Manifest.permission.POST_NOTIFICATIONS) != PackageManager.PERMISSION_GRANTED) {
+            notificationPermission.launch(Manifest.permission.POST_NOTIFICATIONS);
+        }
         Calendar today = Calendar.getInstance();
-        new DatePickerDialog(this, (view, year, month, dayOfMonth) -> {
+        new DatePickerDialog(this, (view, year, month, dayOfMonth) -> showTimePicker(year, month, dayOfMonth),
+                today.get(Calendar.YEAR), today.get(Calendar.MONTH), today.get(Calendar.DAY_OF_MONTH)).show();
+    }
+
+    // README 3.3: pick the time of the cooking session, used for the reminder and the calendar event.
+    private void showTimePicker(int year, int month, int dayOfMonth) {
+        new TimePickerDialog(this, (view, hour, minute) -> {
             String date = String.format(Locale.US, "%04d-%02d-%02d", year, month + 1, dayOfMonth);
             boolean saved = plannerDao.addRecipeToDate(date, mRecipe);
 
             Calendar picked = Calendar.getInstance();
-            picked.set(year, month, dayOfMonth);
-            String displayDate = DateFormat.getDateInstance(DateFormat.LONG).format(picked.getTime());
+            picked.set(year, month, dayOfMonth, hour, minute, 0);
+            String displayDate = DateFormat.getDateTimeInstance(DateFormat.LONG, DateFormat.SHORT)
+                    .format(picked.getTime());
 
             String message = saved
                     ? mRecipe.getTitle() + " added to planning for " + displayDate
                     : "Could not save " + mRecipe.getTitle() + " to planning (recipe_id=" + mRecipe.getId() + ")";
             Toast.makeText(getApplicationContext(), message, Toast.LENGTH_LONG).show();
-        }, today.get(Calendar.YEAR), today.get(Calendar.MONTH), today.get(Calendar.DAY_OF_MONTH)).show();
+
+            if (saved) {
+                if (picked.getTimeInMillis() > System.currentTimeMillis()) {
+                    ReminderReceiver.schedule(getApplicationContext(), mRecipe.getId(), mRecipe.getTitle(),
+                            picked.getTimeInMillis());
+                }
+                offerCalendarEvent(picked);
+            }
+        }, 18, 0, true).show();
     }
+
+    // README 3.4: hand the planned session to the user's calendar app (Google Calendar).
+    private void offerCalendarEvent(Calendar start) {
+        new AlertDialog.Builder(this)
+                .setMessage("Add this session to your calendar?")
+                .setPositiveButton(android.R.string.yes, (dialog, which) -> {
+                    Intent intent = new Intent(Intent.ACTION_INSERT)
+                            .setData(CalendarContract.Events.CONTENT_URI)
+                            .putExtra(CalendarContract.Events.TITLE, "Cook: " + mRecipe.getTitle())
+                            .putExtra(CalendarContract.EXTRA_EVENT_BEGIN_TIME, start.getTimeInMillis())
+                            .putExtra(CalendarContract.EXTRA_EVENT_END_TIME, start.getTimeInMillis() + 60 * 60 * 1000L);
+                    try {
+                        startActivity(intent);
+                    } catch (ActivityNotFoundException e) {
+                        Toast.makeText(this, "No calendar app found", Toast.LENGTH_SHORT).show();
+                    }
+                })
+                .setNegativeButton(android.R.string.no, null)
+                .show();
+    }
+
+    private void shareRecipe() {
+        StringBuilder text = new StringBuilder("Check out this recipe on Shop&Cook: ").append(mRecipe.getTitle());
+        if (shareLink != null && !shareLink.isEmpty()) {
+            text.append('\n').append(shareLink);
+        }
+        Intent send = new Intent(Intent.ACTION_SEND)
+                .setType("text/plain")
+                .putExtra(Intent.EXTRA_SUBJECT, mRecipe.getTitle())
+                .putExtra(Intent.EXTRA_TEXT, text.toString());
+        startActivity(Intent.createChooser(send, getString(R.string.share_recipe)));
+    }
+
+    private void startCookingMode() {
+        if (steps.isEmpty()) {
+            Toast.makeText(this, "No instructions available", Toast.LENGTH_SHORT).show();
+            return;
+        }
+        startActivity(new Intent(this, CookingModeActivity.class)
+                .putExtra(CookingModeActivity.EXTRA_TITLE, mRecipe.getTitle())
+                .putStringArrayListExtra(CookingModeActivity.EXTRA_STEPS, steps));
+    }
+
 
     private class LoadSingleRecipe extends AsyncTask<String, Void, String> {
 
@@ -190,6 +288,10 @@ public class RecipeDetailActivity extends AppCompatActivity {
                 String recipe_title = jsonRootObject.getString("strMeal");
                 String thumbUrl = jsonRootObject.getString("strMealThumb");
                 mRecipe.setImageUrl(thumbUrl);
+
+                steps = RecipeSteps.split(jsonRootObject.optString("strInstructions", ""));
+                String youtube = jsonRootObject.optString("strYoutube", "");
+                shareLink = youtube.isEmpty() ? jsonRootObject.optString("strSource", "") : youtube;
 
                 URL url = new URL(thumbUrl);
                 Bitmap image = BitmapFactory.decodeStream(url.openConnection().getInputStream());

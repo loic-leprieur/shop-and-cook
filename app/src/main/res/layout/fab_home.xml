@@ -9,4 +9,5 @@
     android:layout_margin="16dp"
     android:src="@drawable/ic_home"
     app:backgroundTint="@color/colorPrimary"
+    app:tint="#212121"
     android:contentDescription="@string/app_name" />

@@ -3,6 +3,9 @@
 
     <uses-permission android:name="android.permission.INTERNET" />
     <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
+    <uses-permission android:name="android.permission.POST_NOTIFICATIONS" />
+    <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
+    <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION" />
 
     <application
         android:allowBackup="true"
@@ -26,6 +29,10 @@
             android:windowSoftInputMode="stateHidden" />
         <activity android:name=".activities.RecipeDetailActivity" />
         <activity android:name=".activities.SignInActivity" />
+        <activity android:name=".activities.CookingModeActivity" />
+        <receiver
+            android:name=".activities.ReminderReceiver"
+            android:exported="false" />
     </application>
 
 </manifest>

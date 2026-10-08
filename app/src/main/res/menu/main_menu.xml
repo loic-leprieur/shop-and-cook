@@ -9,11 +9,13 @@
         android:title="Home"
         app:showAsAction="ifRoom"
         android:icon="@drawable/ic_home"
+        app:iconTint="#212121"
         android:orderInCategory="10" />
 
     <item android:id="@+id/action_signout"
         android:title="Sign out"
         android:icon="@drawable/ic_person"
+        app:iconTint="#212121"
         app:showAsAction="ifRoom"
         android:orderInCategory="20" />
 </menu>

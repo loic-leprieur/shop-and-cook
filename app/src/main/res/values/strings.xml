@@ -13,4 +13,14 @@
         <item>Chocolat</item>
     </string-array>
     <string name="title_activity_main">MainActivity</string>
+    <string name="search_by_ingredient">Search by ingredient (e.g. chicken)</string>
+    <string name="start_cooking">Start cooking</string>
+    <string name="share_recipe">Share</string>
+    <string name="sign_in_required">Sign in to use this feature</string>
+    <string name="step_of">Step %1$d / %2$d</string>
+    <string name="previous">Previous</string>
+    <string name="next">Next</string>
+    <string name="finish">Finish</string>
+    <string name="reminder_channel">Cooking reminders</string>
+    <string name="reminder_text">Time to cook %1$s!</string>
 </resources>

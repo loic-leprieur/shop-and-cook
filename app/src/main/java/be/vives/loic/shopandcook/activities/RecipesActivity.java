@@ -18,6 +18,7 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.AdapterView;
+import android.widget.CheckBox;
 import android.widget.EditText;
 import android.widget.ListView;
 import android.widget.Toast;
@@ -57,6 +58,7 @@ public class RecipesActivity extends AppCompatActivity implements AdapterView.On
     private static ArrayList<Recipe> cachedRecipes;
 
     private EditText inputSearch;
+    private CheckBox searchByIngredient;
     private SwipeRefreshLayout swipeContainer;
 
     public Recipe selectedRecipe;
@@ -88,6 +90,10 @@ public class RecipesActivity extends AppCompatActivity implements AdapterView.On
         swipeContainer.setOnRefreshListener(this::refresh);
 
         inputSearch = fragmentView.findViewById(R.id.inputSearch);
+
+        searchByIngredient = fragmentView.findViewById(R.id.searchByIngredient);
+        searchByIngredient.setOnCheckedChangeListener((button, checked) ->
+                search(inputSearch.getText().toString().trim()));
         inputSearch.addTextChangedListener(new TextWatcher() {
             @Override
             public void beforeTextChanged(CharSequence s, int start, int count, int after) {
@@ -185,9 +191,14 @@ public class RecipesActivity extends AppCompatActivity implements AdapterView.On
     }
 
     private String buildUrl(String query) {
-        return query.isEmpty()
-                ? "https://www.themealdb.com/api/json/v1/" + API_KEY + "/search.php?f=a"
-                : "https://www.themealdb.com/api/json/v1/" + API_KEY + "/search.php?s=" + Uri.encode(query);
+        String base = "https://www.themealdb.com/api/json/v1/" + API_KEY;
+        if (query.isEmpty()) {
+            return base + "/search.php?f=a";
+        }
+        // filter.php returns the same idMeal/strMeal/strMealThumb fields as search.php
+        return searchByIngredient != null && searchByIngredient.isChecked()
+                ? base + "/filter.php?i=" + Uri.encode(query.replace(' ', '_'))
+                : base + "/search.php?s=" + Uri.encode(query);
     }
 
     private void fetchRecipes(String url, String query, Runnable onDone) {

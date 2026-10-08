@@ -1,9 +1,11 @@
 <?xml version="1.0" encoding="utf-8"?>
 <menu xmlns:tools="http://schemas.android.com/tools"
-    xmlns:android="http://schemas.android.com/apk/res/android">
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
     <item
         android:id="@+id/action_back"
         android:icon="@drawable/ic_arrow"
+        app:iconTint="#212121"
         android:title="Back"
         android:showAsAction="ifRoom"
         tools:ignore="AppCompatResource" />
@@ -11,15 +13,26 @@
         android:id="@+id/action_add_to_planning"
         android:title="Add to planning"
         android:icon="@drawable/ic_access_time"
+        app:iconTint="#212121"
         android:showAsAction="ifRoom" />
+    <item
+        android:id="@+id/action_cook"
+        android:title="@string/start_cooking"
+        android:showAsAction="never" />
+    <item
+        android:id="@+id/action_share"
+        android:title="@string/share_recipe"
+        android:showAsAction="never" />
     <item
         android:id="@+id/action_home"
         android:title="Home"
         android:icon="@drawable/ic_home"
+        app:iconTint="#212121"
         android:showAsAction="ifRoom" />
     <item
         android:id="@+id/action_signout"
         android:title="Sign out"
         android:icon="@drawable/ic_person"
+        app:iconTint="#212121"
         android:showAsAction="ifRoom" />
 </menu>
